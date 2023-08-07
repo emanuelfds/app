@@ -60,9 +60,8 @@ jobs:
       - uses: actions/checkout@v3
         name: changing the deployment of git repo
         with:
-          repository: 'emanuelfds/App-Manifest' 
+          repository: 'emanuelfds/App-Manifest@main' 
           token: ${{ secrets.GIT_PASSWORD }}
-          path: main
       - name: modify the image
         run: |
           git config user.email emanuelfds@gmail.com
