@@ -50,7 +50,7 @@ jobs:
             name: Build and push
             uses: docker/build-push-action@v4
             with:
-              context: .
+              context: ./Application
               push: true
               tags: emanuelfds/app:v${{ github.run_number }}
   modifygit:
