@@ -57,7 +57,7 @@ sudo systemctl enable k0scontroller
 
 ### Instalando o kubectl
 
->**Note**
+>**Nota**
 >Você deve usar uma versão do kubectl que esteja próxima da versão do seu cluster. Por exemplo, um cliente v1.26 pode se comunicar com as versões v1.25, v1.26 e v1.27 da camada de gerenciamento. Usar a versão compatível mais recente do kubectl ajuda a evitar problemas inesperados.
 
 
@@ -93,7 +93,7 @@ kubectl version --client
 
 Na imagem acima, você pode observar a integração perfeita. Você pode ver que estou usando **`GitHub Actions`** para criar uma imagem **`Docker`** e, em seguida, enviar a imagem para um repositório do **`DockerHub`**. Em seguida, será atualizada a versão da nova imagem no repositório Manifest Git. Estaremos configurando dois repositórios, um para o código do aplicativo e outro para os manifestos do Kubernetes.
 
-Toda vez que seu código for alterado no [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main), uma nova imagem de contêiner do Docker será criada, enviada para o DockerHub e atualizará a tag de imagem no [Repositório do Manifesto do Kubernetes]().
+Toda vez que seu código for alterado no [Repositório do Aplicativo](https://github.com/emanuelfds/App), uma nova imagem de contêiner do Docker será criada, enviada para o DockerHub e atualizará a tag de imagem no [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest).
 
 Assim que uma alteração é detectada no repositório Manifesto do Kubernetes, o ArgoCD entra em ação e começa a distribuir e implantar o novo aplicativo no cluster Kubernetes. Ele garante que a nova versão do nosso aplicativo seja implantada sem problemas, eliminando qualquer intervenção manual ou possíveis erros humanos.
 
@@ -101,7 +101,7 @@ Assim que uma alteração é detectada no repositório Manifesto do Kubernetes, 
 
 Primeiro temos que criar um repositório GitHub e colocar o código do aplicativo nele.
 
-Para o [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main), usaremos um aplicativo Flask simples que exibe uma página com o nome do pod que será empacotado em uma imagem do docker e publicado no DockerHub.
+Para o [Repositório do Aplicativo](https://github.com/emanuelfds/App), usaremos um aplicativo Flask simples que exibe uma página com o nome do pod que será empacotado em uma imagem do docker e publicado no DockerHub.
 
 ```yaml
 from flask import Flask, render_template
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
 ```
 
-Para o [Repositório do Manifesto do Kubernetes](), usaremos a implantação dos arquivos abaixo:
+Para o [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest), usaremos a implantação dos arquivos abaixo:
 
 - **clusterRole.yaml**
 
@@ -243,7 +243,7 @@ spec:
 
 O arquivo de manifesto acima define uma implantação e serviço do Kubernetes para um aplicativo Flask. A implantação criará uma única réplica do aplicativo, que será exposta na porta 5000. O serviço irá expor o aplicativo na porta 80 e estará acessível por meio do NodePort 30002.
 
-Em seguida, precisamos configurar o GitHub Actions no [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main) para criar a imagem do Docker a partir do Dockerfile presente no repositório e, em seguida, enviar a imagem para o repositório do DockerHub.
+Em seguida, precisamos configurar o GitHub Actions no [Repositório do Aplicativo](https://github.com/emanuelfds/App) para criar a imagem do Docker a partir do Dockerfile presente no repositório e, em seguida, enviar a imagem para o repositório do DockerHub.
 
 Para criar um workflow, selecione o repositório GitHub, clique em `Actions` e selecione `Set up a workflow yourself.`. Isso criará um arquivo YAML no caminho **`.github/workflows/main.yml`**. Este é o único arquivo que precisamos criar e modificar na fase GitOps.
 
@@ -386,7 +386,7 @@ Secrets a serem criados:
 - **`GIT_PASSWORD`** - Passdword do seu GitHub
 
 
-O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](), o pipeline é acionado automaticamente realizando as seguintes ações:
+O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), o pipeline é acionado automaticamente realizando as seguintes ações:
 
 1. `Constrói e envia a imagem do Docker` - o pipeline usa o Dockerfile no repositório para criar uma imagem do Docker. Em seguida, ele envia a imagem para um Docker Registry, neste caso o DockerHub. Esta etapa garante que a versão mais recente do aplicativo esteja disponível para implantação.
 2. `Atualiza a versão no Repositório do Manifesto do Kubernetes` - O pipeline atualiza a versão da imagem recém-criada em um repositório Git separado que contém os manifestos de implantação. Isso garante que os manifestos de implantação reflitam a versão de imagem mais recente.
