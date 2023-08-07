@@ -1,4 +1,9 @@
 
+<div align="center">
+
+![WorkFlow](./Images/cicd.webp) </center>
+
+</div>
 
 [![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=https://github.com/emanuelfds)](https://github.com/emanuelfds)
 [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/emanuelfds/)](https://www.linkedin.com/in/emanuelfds/)
@@ -24,12 +29,59 @@ Segue uma visão geral de como será realizada a configuração:
 
 3. **Crie um cluster Kubernetes:** iremos configurar um cluster Kubernetes. Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.27.4+k0s.0/). 
 
-4. **Instalar o ArgoCD:** instalar o ArgoCD no cluster K8s e configurar para se conectar ao seu repositório Git que contém arquivos de manifesto.
+4. **Instalar o Kubectl:** 
 
-5. **Defina o aplicativo ArgoCD:** será definido um aplicativo ArgoCD para gerenciar a implementação de seus recursos do Kubernetes. Ativaremos a sincronização automática para que o ArgoCD possa detectar alterações no repositório Git e acionar implantações de acordo.
+5. **Instalar o ArgoCD:** instalar o ArgoCD no cluster K8s e configurar para se conectar ao seu repositório Git que contém arquivos de manifesto.
+
+6. **Defina o aplicativo ArgoCD:** será definido um aplicativo ArgoCD para gerenciar a implementação de seus recursos do Kubernetes. Ativaremos a sincronização automática para que o ArgoCD possa detectar alterações no repositório Git e acionar implantações de acordo.
 
 6. **Implante aplicativos com o ArgoCD:** o ArgoCD detectará automaticamente as alterações no repositório Git e implantará o aplicativo atualizado no cluster Kubernetes.
 
+## Instalação dos Pré-requisitos
+
+Para que possamos continuar daqui para frente, precisamos ter o seguinte instalado:
+
+- Um cluster Kubernetes
+- kubectl instalado
+
+Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.27.4+k0s.0/).
+
+### Instalando o K0s
+
+```bash
+curl -sSLf https://get.k0s.sh | sudo sh
+sudo k0s install controller --single
+sudo systemctl start k0scontroller
+sudo systemctl enable k0scontroller
+```
+
+### Instalando o kubectl
+
+>**Note**
+>Você deve usar uma versão do kubectl que esteja próxima da versão do seu cluster. Por exemplo, um cliente v1.26 pode se comunicar com as versões v1.25, v1.26 e v1.27 da camada de gerenciamento. Usar a versão compatível mais recente do kubectl ajuda a evitar problemas inesperados.
+
+
+#### Instale o binário kubectl no Linux usando o curl
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+#### Instale o kubectl
+
+```bash
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+sudo cat /var/lib/k0s/pki/admin.conf > $HOME/admin.conf
+mkdir -p $HOME/.kube
+cat $HOME/admin.conf >> ~/.kube/config
+```
+
+Após finalizar a instalação do K0S e do Kubectl, valide a versão:
+
+```bash
+sudo systemctl status k0scontroller
+kubectl version --client
+```
 
 ## O Fluxo
 
@@ -41,7 +93,7 @@ Segue uma visão geral de como será realizada a configuração:
 
 Na imagem acima, você pode observar a integração perfeita. Você pode ver que estou usando **`GitHub Actions`** para criar uma imagem **`Docker`** e, em seguida, enviar a imagem para um repositório do **`DockerHub`**. Em seguida, será atualizada a versão da nova imagem no repositório Manifest Git. Estaremos configurando dois repositórios, um para o código do aplicativo e outro para os manifestos do Kubernetes.
 
-Toda vez que seu código for alterado no [Repositório do Aplicativo](), uma nova imagem de contêiner do Docker será criada, enviada para o DockerHub e atualizará a tag de imagem no [Repositório do Manifesto do Kubernetes]().
+Toda vez que seu código for alterado no [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main), uma nova imagem de contêiner do Docker será criada, enviada para o DockerHub e atualizará a tag de imagem no [Repositório do Manifesto do Kubernetes]().
 
 Assim que uma alteração é detectada no repositório Manifesto do Kubernetes, o ArgoCD entra em ação e começa a distribuir e implantar o novo aplicativo no cluster Kubernetes. Ele garante que a nova versão do nosso aplicativo seja implantada sem problemas, eliminando qualquer intervenção manual ou possíveis erros humanos.
 
@@ -49,7 +101,7 @@ Assim que uma alteração é detectada no repositório Manifesto do Kubernetes, 
 
 Primeiro temos que criar um repositório GitHub e colocar o código do aplicativo nele.
 
-Para o [Repositório do Aplicativo](), usaremos um aplicativo Flask simples que exibe uma página com o nome do pod que será empacotado em uma imagem do docker e publicado no DockerHub.
+Para o [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main), usaremos um aplicativo Flask simples que exibe uma página com o nome do pod que será empacotado em uma imagem do docker e publicado no DockerHub.
 
 ```yaml
 from flask import Flask, render_template
@@ -191,8 +243,7 @@ spec:
 
 O arquivo de manifesto acima define uma implantação e serviço do Kubernetes para um aplicativo Flask. A implantação criará uma única réplica do aplicativo, que será exposta na porta 5000. O serviço irá expor o aplicativo na porta 80 e estará acessível por meio do NodePort 30002.
 
-
-Em seguida, precisamos configurar o GitHub Actions no [Repositório do Aplicativo]() para criar a imagem do Docker a partir do Dockerfile presente no repositório e, em seguida, enviar a imagem para o repositório do DockerHub.
+Em seguida, precisamos configurar o GitHub Actions no [Repositório do Aplicativo](https://github.com/emanuelfds/App/tree/main) para criar a imagem do Docker a partir do Dockerfile presente no repositório e, em seguida, enviar a imagem para o repositório do DockerHub.
 
 Para criar um workflow, selecione o repositório GitHub, clique em `Actions` e selecione `Set up a workflow yourself.`. Isso criará um arquivo YAML no caminho **`.github/workflows/main.yml`**. Este é o único arquivo que precisamos criar e modificar na fase GitOps.
 
@@ -268,7 +319,7 @@ jobs:
       - uses: actions/checkout@v3
         name: changing the deployment of git repo
         with:
-          repository: 'emanuelfds/App-Manifest-' # substituir pelo repo criado
+          repository: 'emanuelfds/App-Manifest' # substituir pelo repo criado
           token: ${{ secrets.GIT_PASSWORD }}
       - name: modify the image
         run: |
@@ -300,7 +351,7 @@ O arquivo acima define um workflow que será executado a cada push para a ramifi
 
 Aqui está uma descrição mais detalhada de cada trabalho:
 
-### Build
+#### Build
 
 - A primeira etapa neste trabalho é verificar o código do repositório.
 - A próxima etapa é configurar o Python 3.10. Isso é feito usando a ação actions/setup-python.
@@ -308,6 +359,48 @@ Aqui está uma descrição mais detalhada de cada trabalho:
 - A quarta etapa é fazer o lint do aplicativo usando flake8. Isso é feito executando o comando flake8.
 - A quinta etapa é executar testes de unidade usando pytest. Isso é feito executando o comando pytest.
 
+#### Docker
+
+- A primeira etapa neste trabalho é verificar o código do repositório.
+- O próximo passo é configurar o QEMU. Isso é feito usando a ação docker/setup-qemu-action.
+- A terceira etapa é configurar o Docker Buildx. Isso é feito usando a ação docker/setup-buildx-action.
+- A quarta etapa é fazer login no Docker Hub. Isso é feito usando a ação docker/login-action.
+- A quinta etapa é criar e enviar a imagem do Docker. Isso é feito usando a ação docker/build-push-action.
+
+#### Modifygit
+
+- A primeira etapa desse trabalho é fazer o checkout do código do repositório CICD-Manifest.
+- A próxima etapa é modificar o manifesto de implantação para usar a imagem do Docker recém enviada. Isso é feito executando o comando sed.
+- A etapa final é enviar as alterações para o repositório. Isso é feito usando o comando git push.
+
+
+### Adicione os segredos do DockerHub e do Git
+
+O repositório GitHub acima usa `secrets` para Docker Hub e Git. Para criar `secrets` em um repositório do GitHub, acesse as configurações do repositório (`settings`), selecione `secrets and variables` e clique em `actions` depois em `new repository secret`. Dê um nome e um valor ao segredo e, em seguida, você poderá usá-lo em qualquer lugar do repositório. Os `secrets` são criptografados e armazenados no GitHub, portanto, estão protegidos. Você pode usar `secrets` para armazenar qualquer tipo de informação confidencial, como chaves de API, senhas e tokens.
+
+Secrets a serem criados:
+
+- **`DOCKERHUB_USERNAME`** - Username do seu DockerHub
+- **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
+- **`GIT_USERNAME`** - Username do seu GitHub
+- **`GIT_PASSWORD`** - Passdword do seu GitHub
+
+
+O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](), o pipeline é acionado automaticamente realizando as seguintes ações:
+
+1. `Constrói e envia a imagem do Docker` - o pipeline usa o Dockerfile no repositório para criar uma imagem do Docker. Em seguida, ele envia a imagem para um Docker Registry, neste caso o DockerHub. Esta etapa garante que a versão mais recente do aplicativo esteja disponível para implantação.
+2. `Atualiza a versão no Repositório do Manifesto do Kubernetes` - O pipeline atualiza a versão da imagem recém-criada em um repositório Git separado que contém os manifestos de implantação. Isso garante que os manifestos de implantação reflitam a versão de imagem mais recente.
+3. `Aciona a implantação do ArgoCD` - As alterações feitas no repositório do manifesto de implantação acionam automaticamente o ArgoCD para implantar o aplicativo no Kubernetes. ArgoCD usa os manifestos atualizados para implantar o aplicativo no cluster Kubernetes.
+
+O pipeline também fornece visibilidade do status da compilação, conforme mostrado na imagem a seguir. Isso permite que você monitore o sucesso ou a falha do processo de CI/CD.
+
+
+
+<div align="center">
+
+![WorkFlow](./Images/github_actions_01.png) </center>
+
+</div>
 
 
 
@@ -318,9 +411,6 @@ Aqui está uma descrição mais detalhada de cada trabalho:
 
 
 
-
-
-A ideia é utilizar o GitHub Actions pra build de imagem docker no docker hub e utilizar o argocd para deploy no cluster kubernetes
 
 
 

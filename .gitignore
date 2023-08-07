@@ -1,2 +1,4 @@
-WorkFlow.xml
+*.xml
 deployment_teste.yaml
+referências.txt
+.gitignore
