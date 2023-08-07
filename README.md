@@ -309,7 +309,7 @@ jobs:
             name: Build and push
             uses: docker/build-push-action@v4
             with:
-              context: .
+              context: ./Application
               push: true
               tags: emanuelfds/app:v${{ github.run_number }}
   modifygit:
@@ -346,7 +346,7 @@ O arquivo acima define um workflow que será executado a cada push para a ramifi
 
 - **`Docker`** - Esta Job criará uma imagem do Docker para o aplicativo e a enviará para o Docker Hub.
 
-- **`Modifygit`** - Esta Job modificará o manifesto de implantação no repositório CICD-Manifest para usar a imagem do Docker recém-enviada.
+- **`Modifygit`** - Esta Job modificará o manifesto de implantação no repositório APP-Manifest para usar a imagem do Docker recém-enviada.
 
 
 Aqui está uma descrição mais detalhada de cada trabalho:
@@ -376,7 +376,7 @@ Aqui está uma descrição mais detalhada de cada trabalho:
 
 ### Adicione os segredos do DockerHub e do Git
 
-O repositório GitHub acima usa `secrets` para Docker Hub e Git. Para criar `secrets` em um repositório do GitHub, acesse as configurações do repositório (`settings`), selecione `secrets and variables` e clique em `actions` depois em `new repository secret`. Dê um nome e um valor ao segredo e, em seguida, você poderá usá-lo em qualquer lugar do repositório. Os `secrets` são criptografados e armazenados no GitHub, portanto, estão protegidos. Você pode usar `secrets` para armazenar qualquer tipo de informação confidencial, como chaves de API, senhas e tokens.
+O repositório GitHub acima usa `secrets` para Docker Hub e Git. Para criar `secrets` em um repositório do GitHub, vá em `settings`, selecione `secrets and variables` e clique em `actions` depois em `new repository secret`. Dê um nome e um valor ao segredo e, em seguida, você poderá usá-lo em qualquer lugar do repositório. Os `secrets` são criptografados e armazenados no GitHub, portanto, estão protegidos. Você pode usar `secrets` para armazenar qualquer tipo de informação confidencial, como chaves de API, senhas e tokens.
 
 Secrets a serem criados:
 
@@ -393,7 +393,6 @@ O pipeline GitOps CI/CD agora está configurado para automatizar os processos de
 3. `Aciona a implantação do ArgoCD` - As alterações feitas no repositório do manifesto de implantação acionam automaticamente o ArgoCD para implantar o aplicativo no Kubernetes. ArgoCD usa os manifestos atualizados para implantar o aplicativo no cluster Kubernetes.
 
 O pipeline também fornece visibilidade do status da compilação, conforme mostrado na imagem a seguir. Isso permite que você monitore o sucesso ou a falha do processo de CI/CD.
-
 
 
 <div align="center">

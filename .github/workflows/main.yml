@@ -62,6 +62,7 @@ jobs:
         with:
           repository: 'emanuelfds/App-Manifest' 
           token: ${{ secrets.GIT_PASSWORD }}
+          path: main
       - name: modify the image
         run: |
           git config user.email emanuelfds@gmail.com
