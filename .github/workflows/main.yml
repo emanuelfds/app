@@ -62,7 +62,7 @@ jobs:
         with:
           repository: emanuelfds/App-Manifest
           # token: ${{ secrets.GIT_PASSWORD }}
-          token: ${{ secrets.GITHUB_PAT }}
+          token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
       - name: modify the image
         run: |
