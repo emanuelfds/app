@@ -61,7 +61,9 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: emanuelfds/App-Manifest
-          token: ${{ secrets.GIT_PASSWORD }}
+          token: $
+          persist-credentials: true
+          # token: ${{ secrets.GIT_PASSWORD }}
           # token: ${{ secrets.GITHUB_TOKEN }}
       - name: modify the image
         run: |
