@@ -64,8 +64,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: modify the image
         run: |
-          git config --global user.email emanuelfds@gmail.com
-          git config --global user.name Emanuel Fernandes
+          git config --global user.email "emanuelfds@gmail.com"
+          git config --global user.name E"manuel Fernandes"
           pwd
           cat deployment.yaml
           pwd
