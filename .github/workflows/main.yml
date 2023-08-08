@@ -61,10 +61,9 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: emanuelfds/App-Manifest
-          token: $
-          persist-credentials: true
           # token: ${{ secrets.GIT_PASSWORD }}
-          # token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       - name: modify the image
         run: |
           git config --global user.email "emanuelfds@gmail.com"
