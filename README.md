@@ -377,15 +377,32 @@ Aqui está uma descrição mais detalhada de cada trabalho:
 
 O repositório GitHub acima usa `secrets` para Docker Hub e Git. Para criar `secrets` em um repositório do GitHub, vá em `settings`, selecione `secrets and variables` e clique em `actions` depois em `new repository secret`. Dê um nome e um valor ao segredo e, em seguida, você poderá usá-lo em qualquer lugar do repositório. Os `secrets` são criptografados e armazenados no GitHub, portanto, estão protegidos. Você pode usar `secrets` para armazenar qualquer tipo de informação confidencial, como chaves de API, senhas e tokens.
 
-Secrets a serem criados:
+Para que seja efetuada a alteração no [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest), será necessário criar o `Personal Access Token`. Você pode gerar o Personal Access Token no GitHub da seguinte maneira:
+
+1. Navegue até `Settings` ma sua conta Git e, em seguida, `Developer Settings`. Clique no menu Personal Access Token depois em `Tokens` e `Generate New Token (Classic)`. Em **`Note`** dê um nome para o seu token e em **`Expiration`** escolha o tempo de utilização desse token.
+
+<div align="center">
+
+![WorkFlow](./Images/github_pat_01.png) </center>
+
+</div>
+
+2. Selecione **`repo`** como o escopo. O token será aplicável para todas as ações especificadas em seus repositórios.
+
+<div align="center">
+
+![WorkFlow](./Images/github_pat_02.png) </center>
+
+</div>
+
+3. Clique em **`Generate token`**.
+
+O GitHub exibirá o Personal Access Token apenas uma vez. Certifique-se de copiar o token e armazená-lo em um lugar seguro.
+
+Agora com o PAT criado, vamos seguir com a criação dos Secrets:
 
 - **`DOCKERHUB_USERNAME`** - Username do seu DockerHub
 - **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
-
-Para que seja efetuada a alteração no [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest), será necessário criar o `Personal Access Token`. Você pode gerar o Personal Access Token no GitHub da seguinte maneira:
-
-1. Navegue até `Settings` ma sua conta Git e, em seguida, `Developer Settings`. Clique no menu Personal Access Token depois em `Tokens` e `Generate New Token (Classic)`.
-
 - **`GIT_PAT`** - Personal Access Token
 
 
@@ -409,15 +426,3 @@ O pipeline também fornece visibilidade do status da compilação, conforme most
 
 
 
-
-
-
-
-
-
-
-
-
-Aplicação simples que exibe o nome do `pod` no browser.
-
-https://medium.com/@tanmay8928_27546/ci-cd-with-github-github-actions-argo-cd-and-kubernetes-cluster-192b019129f6
