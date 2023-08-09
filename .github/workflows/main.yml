@@ -73,7 +73,7 @@ jobs:
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" deployment.yaml
           cat deployment.yaml
           git add .
-          git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
+          git commit -m 'Deployment alterado para a versão: ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}

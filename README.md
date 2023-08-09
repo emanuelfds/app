@@ -319,19 +319,20 @@ jobs:
       - uses: actions/checkout@v3
         name: changing the deployment of git repo
         with:
-          repository: 'emanuelfds/App-Manifest' # substituir pelo repo criado
+          repository: emanuelfds/App-Manifest
           token: ${{ secrets.GIT_PAT }}
+          persist-credentials: true
       - name: modify the image
         run: |
-          git config user.email "emanuelfds@gmail.com"
-          git config user.name "Emanuel Fernandes"
+          git config --global user.email "emanuelfds@gmail.com"
+          git config --global user.name "Emanuel Fernandes"
           pwd
           cat deployment.yaml
           pwd
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" deployment.yaml
           cat deployment.yaml
           git add .
-          git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
+          git commit -m 'Deployment alterado para a versão: ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}
@@ -380,6 +381,11 @@ Secrets a serem criados:
 
 - **`DOCKERHUB_USERNAME`** - Username do seu DockerHub
 - **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
+
+Para que seja efetuada a alteração no [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest), será necessário criar o `Personal Access Token`. Você pode gerar o Personal Access Token no GitHub da seguinte maneira:
+
+1. Navegue até `Settings` ma sua conta Git e, em seguida, `Developer Settings`. Clique no menu Personal Access Token depois em `Tokens` e `Generate New Token (Classic)`.
+
 - **`GIT_PAT`** - Personal Access Token
 
 
