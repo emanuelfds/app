@@ -320,11 +320,11 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: 'emanuelfds/App-Manifest' # substituir pelo repo criado
-          token: ${{ secrets.GIT_PASSWORD }}
+          token: ${{ secrets.GIT_PAT }}
       - name: modify the image
         run: |
-          git config user.email emanuelfds@gmail.com
-          git config user.name Emanuel Fernandes
+          git config user.email "emanuelfds@gmail.com"
+          git config user.name "Emanuel Fernandes"
           pwd
           cat deployment.yaml
           pwd
@@ -334,8 +334,6 @@ jobs:
           git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
           git push origin main
         env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
           RUN_NUMBER: ${{ github.run_number }}
 ```
 
@@ -382,8 +380,7 @@ Secrets a serem criados:
 
 - **`DOCKERHUB_USERNAME`** - Username do seu DockerHub
 - **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
-- **`GIT_USERNAME`** - Username do seu GitHub
-- **`GIT_PASSWORD`** - Passdword do seu GitHub
+- **`GIT_PAT`** - Personal Access Token
 
 
 O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), o pipeline é acionado automaticamente realizando as seguintes ações:
