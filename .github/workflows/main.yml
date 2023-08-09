@@ -61,7 +61,6 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: emanuelfds/App-Manifest
-          # token: ${{ secrets.GIT_PASSWORD }}
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
       - name: modify the image
@@ -77,6 +76,6 @@ jobs:
           git commit -m 'Done  by Github Actions   Job changemanifest: ${{ github.run_number }}'
           git push origin main
         env:
-          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
+          # GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          # GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
           RUN_NUMBER: ${{ github.run_number }}
