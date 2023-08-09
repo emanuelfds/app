@@ -414,10 +414,9 @@ O pipeline GitOps CI/CD agora está configurado para automatizar os processos de
 
 O pipeline também fornece visibilidade do status da compilação, conforme mostrado na imagem a seguir. Isso permite que você monitore o sucesso ou a falha do processo de CI/CD.
 
-
 <div align="center">
 
-![WorkFlow](./Images/github_actions_01.png) </center>
+![WorkFlow](./Images/github_actions_02.png) </center>
 
 </div>
 
