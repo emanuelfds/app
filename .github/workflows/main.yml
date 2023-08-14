@@ -61,6 +61,7 @@ jobs:
         name: changing the deployment of git repo
         with:
           repository: 'emanuelfds/App-Manifest'
+          path: k8s
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
       - name: modify the image
