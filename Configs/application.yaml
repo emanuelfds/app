@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1                                  # API Version
+kind: Application                                                 # Resource type, in case Application
+metadata:
+  name: myapp                                                     # Resource Name
+  namespace: argocd
+spec:
+  project: default
+  source:                                                         # GitHub Repository
+    # directory:
+    #   recurse: true
+    repoURL: https://github.com/emanuelfds/App-Manifest.git
+    targetRevision: HEAD
+    path: dev                                                     # Path in Repository
+  destination:
+    server: https://kubernetes.default.svc                        # Internal Service Name of Kubernetes API Server  
+    namespace: myapp
+  syncPolicy:
+    syncOptions:
+    # - Validate=true
+    - PrunePropagationPolicy=foreground
+    - PruneLast=true                                            
+    - CreateNameSpace=true     
+    - replace=true
+    automated:                                                    # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      selfHeal: true                                              # Enable automatic self-healing. By default, changes made to the live cluster will not trigger automated sync
+      prune: true                                                 # Enable automatic prunning. By default, automatic sync will not delete resources
+      allowEmpty: false
+    retry:
+      limit: 5
+    #   backoff:
+    #     duration: 5s
+    #     factor: 2
+    #     maxDuration: 3m

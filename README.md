@@ -421,7 +421,159 @@ O pipeline também fornece visibilidade do status da compilação, conforme most
 </div>
 
 
+## Instalando o ArgoCD como um operador no Kubernetes
+
+Antes de começar, crie um diretório chamado **`Configs`** na raiz do seu projeto. É nesse diretório que ficarão todos os arquivos necessários para configurarmos a nossa aplicação.
+
+Para instalar o ArgoCD como um operador no Kubernetes, antes precisamos criar uma namespace chamado **`argocd`**, e para isso vamos criar o arquivo de manifesto `namespace.yaml`, com o conteúdo abaixo:
+
+```yml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  labels:
+    name: argocd
+```
+E aplicar executando o seguinte comando:
+
+```bash
+kubectl apply -f ./Configs/namespace.yaml 
+```
+
+A saída desse comando será algo parecido com isso:
+
+```bash
+namespace/argocd created
+```
+
+Agora vamos instalar o ArgoCD como um operador no Kubernetes:
+
+```bash
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Depois de executar o comando de instalação, você pode verificar a implantação verificando o status dos pods ArgoCD:
+
+```bash
+kubectl get pods -n argocd
+```
+
+Para acessar o painel do ArgoCD, usarei o Port Forwarding para acessar o ArgoCD
+
+```bash
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+Acesse o painel ArgoCD de sua máquina local usando o seguinte endereço
+
+```bash
+http://127.0.0.1:8080
+```
+
+Para obter a senha, você pode executar o comando abaixo em seu cluster Kubernetes. O nome de usuário padrão do ArgoCD é **`admin`**
+
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+## Criando a aplicação no ArgoCD
+
+Para configurar o ArgoCD para implantar o nosso aplicativo no Kubernetes, será preciso configurar o ArgoCD para conectar o [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) e o Kubernetes de forma declarativa usando YAML para configuração.
+
+Além desse método, você também pode configurar o ArgoCD no Portal da Web ou usando o ArgoCD CLI.
+
+Como este tutorial segue os princípios do GitOps, estamos usando o repositório Git como a única fonte confiável. Portanto, o método declarativo usando arquivos YAML funciona melhor.
+
+Um dos principais recursos e capacidades do ArgoCD é sincronizar via política manual ou automática para implantação de aplicativos em um cluster Kubernetes.
+
+Crie um novo arquivo no diretório `Configs` e nomeie-o como `application.yaml`.
+
+A especificação do manifesto para o aplicativo que vamos utilizar é a seguinte:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1                                  
+kind: Application                                                 
+metadata:
+  name: myapp                                                     
+  namespace: argocd
+spec:
+  project: default
+  source:                                                         
+    # directory:
+    #   recurse: true
+    repoURL: git@github.com:emanuelfds/App-Manifest.git
+    targetRevision: HEAD
+    path: dev                                                     
+  destination:
+    server: https://kubernetes.default.svc                          
+    namespace: myapp
+  syncPolicy:
+    syncOptions:
+    # - Validate=true
+    - PrunePropagationPolicy=foreground
+    - PruneLast=true                                            
+    - CreateNameSpace=true     
+    - replace=true
+    automated:                                                    # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
+      selfHeal: true                                             automated sync
+      prune: true                                                
+      allowEmpty: false
+    retry:
+      limit: 5
+    #   backoff:
+    #     duration: 5s
+    #     factor: 2
+    #     maxDuration: 3m
+```
+
+> **Nota:** 
+O `namespace` deve corresponder ao namespace de sua instância ArgoCD - geralmente é `argocd`.
+
+Onde:
+
+- **`destination.namespace`**, namespace onde será implantado o aplicativo
+- **`destination.server`**, cluster onde será implantado o aplicativo (https://kuberentes.default.svc indica ser um cluster local)
+- **`source.repoURL`**, URL do repositório onde está o seu projeto
+- **`source.path`**, caminho dentro do repositório onde está o seu projeto (artefatos da sua aplicação: deployment, service e etc..)
+- **`source.targetRevision`**, é a tag Git, branch ou commit para rastrear
+- **`syncPolicy.syncOptions`**, ele criará o namespace especificado se ainda não existir (`CreateNameSpace=true`) e usará o comando `kubectl replace` ou `kubectl create` para aplicar as alterações (`Replace=true`). Permite adiar a remoção de recursos até a última fase de sincronização depois que todos os outros recursos estiverem sincronizados e íntegros (`PruneLast=true`) e define como os recursos são removidos, aplicando as políticas de exclusão em [cascata do Kubernetes](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#cascading-deletion) (`PrunePropagationPolicy=foreground`)
+- **`syncPolicy.automated`**, são políticas de [sincronização automática do ArgoCD](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/), para manter automaticamente em sincronia os arquivos de manifesto do aplicativo no cluster, excluir recursos antigos (`prune`) e iniciar a sincronização quando forem feitas alterações no cluster (`selfHeal`)
 
 
 
 
+
+
+## Configurando acesso ao repositório
+
+Com a chave devidamente configurada, crie um novo arquivo no diretório `Configs` para que o ArgoCD possa ter acesso ao Github e nomeie-o como `secret.yaml`.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argo-ssh-secret
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://github.com/emanuelfds/App-Manifest.git
+```
+
+Para aplicar o arquivo de `secret` no Kubernetes, basta executar o seguinte comando:
+
+```bash
+kubectl apply -f ./Configs/secret.yaml 
+```
+A saída do comando será algo como:
+
+```bash
+secret/argo-ssh-secret created
+```
+
+Agora que já temos o Argocd instalado e `secret` configurado podemos prosseguir com a instalação da nossa aplicação. Para issso, bastaexecutar o seguinte comando:
+
+```bash
+kubectl apply -f ./Configs/application.yaml 
