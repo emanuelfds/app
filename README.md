@@ -487,7 +487,7 @@ Como este tutorial segue os princípios do GitOps, estamos usando o repositório
 
 Um dos principais recursos e capacidades do ArgoCD é sincronizar via política manual ou automática para implantação de aplicativos em um cluster Kubernetes.
 
-Crie um novo arquivo no diretório `Configs` e nomeie-o como `application.yaml`.
+Crie um novo arquivo no diretório **`Configs`** e nomeie-o como `application.yaml`.
 
 A especificação do manifesto para o aplicativo que vamos utilizar é a seguinte:
 
@@ -504,7 +504,7 @@ spec:
     #   recurse: true
     repoURL: git@github.com:emanuelfds/App-Manifest.git
     targetRevision: HEAD
-    path: dev                                                     
+    path: k8s                                                     
   destination:
     server: https://kubernetes.default.svc                          
     namespace: myapp
@@ -515,8 +515,8 @@ spec:
     - PruneLast=true                                            
     - CreateNameSpace=true     
     - replace=true
-    automated:                                                    # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.
-      selfHeal: true                                             automated sync
+    automated:                                                    
+      selfHeal: true                                           
       prune: true                                                
       allowEmpty: false
     retry:
@@ -540,14 +540,11 @@ Onde:
 - **`syncPolicy.syncOptions`**, ele criará o namespace especificado se ainda não existir (`CreateNameSpace=true`) e usará o comando `kubectl replace` ou `kubectl create` para aplicar as alterações (`Replace=true`). Permite adiar a remoção de recursos até a última fase de sincronização depois que todos os outros recursos estiverem sincronizados e íntegros (`PruneLast=true`) e define como os recursos são removidos, aplicando as políticas de exclusão em [cascata do Kubernetes](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#cascading-deletion) (`PrunePropagationPolicy=foreground`)
 - **`syncPolicy.automated`**, são políticas de [sincronização automática do ArgoCD](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/), para manter automaticamente em sincronia os arquivos de manifesto do aplicativo no cluster, excluir recursos antigos (`prune`) e iniciar a sincronização quando forem feitas alterações no cluster (`selfHeal`)
 
+## Definindo um repositório Git no ArgoCD
 
+Como o [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) é público, não há necessidade de configurar uma credencial.
 
-
-
-
-## Configurando acesso ao repositório
-
-Com a chave devidamente configurada, crie um novo arquivo no diretório `Configs` para que o ArgoCD possa ter acesso ao Github e nomeie-o como `secret.yaml`.
+Crie um novo arquivo no diretório **`Configs`** para que o ArgoCD possa ter acesso ao Github e nomeie-o como `secret.yaml`.
 
 ```yaml
 apiVersion: v1
@@ -573,7 +570,7 @@ A saída do comando será algo como:
 secret/argo-ssh-secret created
 ```
 
-Agora que já temos o Argocd instalado e `secret` configurado podemos prosseguir com a instalação da nossa aplicação. Para issso, bastaexecutar o seguinte comando:
+Agora que já temos o ArgoCD instalado e `secret` configurado podemos prosseguir com a instalação da nossa aplicação. Para issso, basta executar o seguinte comando:
 
 ```bash
 kubectl apply -f ./Configs/application.yaml 

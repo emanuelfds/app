@@ -10,7 +10,7 @@ spec:
     #   recurse: true
     repoURL: https://github.com/emanuelfds/App-Manifest.git
     targetRevision: HEAD
-    path: dev                                                     # Path in Repository
+    path: k8s                                                     # Path in Repository
   destination:
     server: https://kubernetes.default.svc                        # Internal Service Name of Kubernetes API Server  
     namespace: myapp
