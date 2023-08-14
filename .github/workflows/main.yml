@@ -66,13 +66,13 @@ jobs:
           persist-credentials: true
       - name: modify the image
         run: |
-          git config --global user.email $GIT_EMAIL
-          git config --global user.name $GIT_USERNAME
+          git config --global user.email "$GIT_EMAIL"
+          git config --global user.name "$GIT_USERNAME"
           pwd
-          cat $PATH/deployment.yaml
+          cat "$PATH"/deployment.yaml
           pwd
-          sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" $PATH/deployment.yaml
-          cat $PATH/deployment.yaml
+          sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" "$PATH"/deployment.yaml
+          cat "$PATH"/deployment.yaml
           git add .
           git commit -m 'Deployment alterado para a versão: ${{ github.run_number }}'
           git push origin main
