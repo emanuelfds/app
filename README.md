@@ -319,20 +319,20 @@ jobs:
       - uses: actions/checkout@v3
         name: changing the deployment of git repo
         with:
-          repository: emanuelfds/App-Manifest
+          repository: 'emanuelfds/App-Manifest'
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
       - name: modify the image
         run: |
-          git config --global user.email "emanuelfds@gmail.com"
-          git config --global user.name "Emanuel Fernandes"
+          git config user.email ${{ vars.GIT_EMAIL }}
+          git config user.name ${{ vars.GIT_USERNAME }}
           pwd
-          cat deployment.yaml
+          cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
-          sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" deployment.yaml
-          cat deployment.yaml
+          sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
-          git commit -m 'Deployment alterado para a versão: ${{ github.run_number }}'
+          git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}
@@ -405,6 +405,12 @@ Agora com o PAT criado, vamos seguir com a criação dos Secrets:
 - **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
 - **`GIT_PAT`** - Personal Access Token
 
+Para este projeto foi criado também as seguintes variáveis:
+
+- **`GIT_EMAIL`** - Endereço de email que será associado aos commits da sua conta no GitHub.
+- **`GIT_USERNAME`** - Username que será associado aos commits da sua conta no GitHub.
+- **`k8S_PATH`** - Caminho dentro do [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) onde se encontra o arquivo de `deployment`.
+
 
 O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), o pipeline é acionado automaticamente realizando as seguintes ações:
 
@@ -419,7 +425,6 @@ O pipeline também fornece visibilidade do status da compilação, conforme most
 ![WorkFlow](./Images/github_actions_02.png) </center>
 
 </div>
-
 
 ## Instalando o ArgoCD como um operador no Kubernetes
 
@@ -476,7 +481,6 @@ Para obter a senha, você pode executar o comando abaixo em seu cluster Kubernet
 ```bash
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
-
 ## Criando a aplicação no ArgoCD
 
 Para configurar o ArgoCD para implantar o nosso aplicativo no Kubernetes, será preciso configurar o ArgoCD para conectar o [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) e o Kubernetes de forma declarativa usando YAML para configuração.
@@ -502,7 +506,7 @@ spec:
   source:                                                         
     # directory:
     #   recurse: true
-    repoURL: git@github.com:emanuelfds/App-Manifest.git
+    repoURL: https://github.com/emanuelfds/App-Manifest.git
     targetRevision: HEAD
     path: k8s                                                     
   destination:
@@ -532,13 +536,13 @@ O `namespace` deve corresponder ao namespace de sua instância ArgoCD - geralmen
 
 Onde:
 
-- **`destination.namespace`**, namespace onde será implantado o aplicativo
-- **`destination.server`**, cluster onde será implantado o aplicativo (https://kuberentes.default.svc indica ser um cluster local)
-- **`source.repoURL`**, URL do repositório onde está o seu projeto
-- **`source.path`**, caminho dentro do repositório onde está o seu projeto (artefatos da sua aplicação: deployment, service e etc..)
-- **`source.targetRevision`**, é a tag Git, branch ou commit para rastrear
-- **`syncPolicy.syncOptions`**, ele criará o namespace especificado se ainda não existir (`CreateNameSpace=true`) e usará o comando `kubectl replace` ou `kubectl create` para aplicar as alterações (`Replace=true`). Permite adiar a remoção de recursos até a última fase de sincronização depois que todos os outros recursos estiverem sincronizados e íntegros (`PruneLast=true`) e define como os recursos são removidos, aplicando as políticas de exclusão em [cascata do Kubernetes](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#cascading-deletion) (`PrunePropagationPolicy=foreground`)
-- **`syncPolicy.automated`**, são políticas de [sincronização automática do ArgoCD](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/), para manter automaticamente em sincronia os arquivos de manifesto do aplicativo no cluster, excluir recursos antigos (`prune`) e iniciar a sincronização quando forem feitas alterações no cluster (`selfHeal`)
+- **`destination.namespace`** - Namespace onde será implantado o aplicativo
+- **`destination.server`** - Cluster onde será implantado o aplicativo (https://kuberentes.default.svc indica ser um cluster local)
+- **`source.repoURL`** - URL do repositório onde está o seu projeto
+- **`source.path`** - Caminho dentro do repositório onde está o seu projeto (artefatos da sua aplicação: deployment, service e etc..)
+- **`source.targetRevision`** - É a tag Git, branch ou commit para rastrear
+- **`syncPolicy.syncOptions`** - Ele criará o namespace especificado se ainda não existir (`CreateNameSpace=true`) e usará o comando `kubectl replace` ou `kubectl create` para aplicar as alterações (`Replace=true`). Permite adiar a remoção de recursos até a última fase de sincronização depois que todos os outros recursos estiverem sincronizados e íntegros (`PruneLast=true`) e define como os recursos são removidos, aplicando as políticas de exclusão em [cascata do Kubernetes](https://kubernetes.io/docs/concepts/architecture/garbage-collection/#cascading-deletion) (`PrunePropagationPolicy=foreground`)
+- **`syncPolicy.automated`** - São políticas de [sincronização automática do ArgoCD](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/), para manter automaticamente em sincronia os arquivos de manifesto do aplicativo no cluster, excluir recursos antigos (`prune`) e iniciar a sincronização quando forem feitas alterações no cluster (`selfHeal`)
 
 ## Definindo um repositório Git no ArgoCD
 
@@ -574,3 +578,17 @@ Agora que já temos o ArgoCD instalado e `secret` configurado podemos prosseguir
 
 ```bash
 kubectl apply -f ./Configs/application.yaml 
+```
+
+A saída do comando será algo parecido com:
+
+```bash
+application.argoproj.io/myapp created
+```
+Ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080), será visto algo como:
+
+<div align="center">
+
+![WorkFlow](./Images/argocd_applications_01.png) </center>
+
+</div>

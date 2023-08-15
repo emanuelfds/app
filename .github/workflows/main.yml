@@ -65,15 +65,15 @@ jobs:
           persist-credentials: true
       - name: modify the image
         run: |
-          git config --global user.email ${{ vars.GIT_EMAIL }}
-          git config --global user.name ${{ vars.GIT_USERNAME }}
+          git config user.email ${{ vars.GIT_EMAIL }}
+          git config user.name ${{ vars.GIT_USERNAME }}
           pwd
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
-          git commit -m 'Deployment alterado para a versão: ${{ github.run_number }}'
+          git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
           git push origin main
         env:
           RUN_NUMBER: ${{ github.run_number }}
