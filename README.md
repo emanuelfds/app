@@ -406,8 +406,13 @@ Para este projeto foi criado também as seguintes variáveis:
 - **`GIT_USERNAME`** - Username que será associado aos commits da sua conta no GitHub.
 - **`k8S_PATH`** - Caminho dentro do [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) onde se encontra o arquivo de `deployment`.
 
+E foi utilizada a variável de ambiente padrão do GitHub:
 
-O pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branche **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), o pipeline é acionado automaticamente realizando as seguintes ações:
+- **`GITHUB_RUN_NUMBER`** - Um número exclusivo para cada execução de um fluxo de trabalho específico em um repositório.
+
+Para maiores informações sobre as variáveis de ambiente padrão do GitHub, acesse esse [link](https://docs.github.com/pt/actions/learn-github-actions/variables#default-environment-variables)
+
+Pronto! Agora o pipeline GitOps CI/CD agora está configurado para automatizar os processos de build, push e implantação. Sempre que um commit é feito na branch **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), o pipeline é acionado automaticamente realizando as seguintes ações:
 
 1. `Constrói e envia a imagem do Docker` - o pipeline usa o Dockerfile no repositório para criar uma imagem do Docker. Em seguida, ele envia a imagem para um Docker Registry, neste caso o DockerHub. Esta etapa garante que a versão mais recente do aplicativo esteja disponível para implantação.
 2. `Atualiza a versão no Repositório do Manifesto do Kubernetes` - O pipeline atualiza a versão da imagem recém-criada em um repositório Git separado que contém os manifestos de implantação. Isso garante que os manifestos de implantação reflitam a versão de imagem mais recente.
