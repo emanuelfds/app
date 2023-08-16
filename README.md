@@ -383,7 +383,7 @@ Para que seja efetuada a alteração no [Repositório do Manifesto do Kubernetes
 
 <div align="center">
 
-![WorkFlow](./Images/github_pat_01.png) </center>
+![GitHub](./Images/github_pat_01.png) </center>
 
 </div>
 
@@ -391,7 +391,7 @@ Para que seja efetuada a alteração no [Repositório do Manifesto do Kubernetes
 
 <div align="center">
 
-![WorkFlow](./Images/github_pat_02.png) </center>
+![GitHub](./Images/github_pat_02.png) </center>
 
 </div>
 
@@ -422,7 +422,7 @@ O pipeline também fornece visibilidade do status da compilação, conforme most
 
 <div align="center">
 
-![WorkFlow](./Images/github_actions_02.png) </center>
+![GitHub](./Images/github_actions_02.png) </center>
 
 </div>
 
@@ -589,6 +589,14 @@ Ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080
 
 <div align="center">
 
-![WorkFlow](./Images/argocd_applications_01.png) </center>
+![ArgoCD](./Images/argocd_applications_01.png) </center>
+
+</div>
+
+Clicando na aplicação `myapp` você poderá ver mais detalhes
+
+<div align="center">
+
+![ArgoCD](./Images/argocd_applications_02.png) </center>
 
 </div>

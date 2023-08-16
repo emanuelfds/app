@@ -66,7 +66,7 @@ jobs:
       - name: modify the image
         run: |
           git config user.email ${{ vars.GIT_EMAIL }}
-          git config user.name ${{ vars.GIT_USERNAME }}
+          git config user.name "${{ vars.GIT_USERNAME }}"
           pwd
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
