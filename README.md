@@ -1,4 +1,5 @@
 
+# CI/CD com GitHub, GitHub Actions, Argo CD e Cluster Kubernetes
 <div align="center">
 
 ![WorkFlow](./Images/cicd.webp) </center>
@@ -7,8 +8,6 @@
 
 [![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=https://github.com/emanuelfds)](https://github.com/emanuelfds)
 [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/emanuelfds/)](https://www.linkedin.com/in/emanuelfds/)
-
-# CI/CD com GitHub, GitHub Actions, Argo CD e Cluster Kubernetes
 
 ## Breve Introdução
 
@@ -585,6 +584,9 @@ A saída do comando será algo parecido com:
 ```bash
 application.argoproj.io/myapp created
 ```
+
+Com a incorporação do ArgoCD em nosso pipeline de implantação, ganhamos recursos de monitoramento contínuo para nosso repositório de manifesto. O ArgoCD observa diligentemente esse repositório e, sempre que são detectadas alterações, inicia rapidamente o processo de sincronização, garantindo que as atualizações mais recentes sejam aplicadas perfeitamente ao nosso cluster Kubernetes.
+
 Ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080), será visto algo como:
 
 <div align="center">
@@ -593,6 +595,10 @@ Ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080
 
 </div>
 
+Durante esta fase de sincronização, o ArgoCD examina cuidadosamente o arquivo de manifesto e avalia o estado atual do cluster Kubernetes. Se os recursos definidos no arquivo de manifesto ainda não existirem no cluster, o ArgoCD entra em ação. Ele orquestra rapidamente a implantação desses novos recursos, garantindo que os componentes de aplicativo desejados sejam provisionados no cluster.
+
+Esse processo automatizado não apenas economiza tempo, mas também elimina o risco de erros manuais que geralmente acompanham a criação e implantação manual de recursos.
+
 Clicando na aplicação `myapp` você poderá ver mais detalhes
 
 <div align="center">
@@ -600,3 +606,5 @@ Clicando na aplicação `myapp` você poderá ver mais detalhes
 ![ArgoCD](./Images/argocd_applications_02.png) </center>
 
 </div>
+
+Implementamos com sucesso um fluxo de trabalho de CI/CD altamente eficiente que agora é totalmente automatizado. Como resultado, sempre que um desenvolvedor faz alterações na branh **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), as atualizações são refletidas diretamente no site principal sem qualquer intervenção manual. Esse processo automatizado elimina a necessidade de implantações manuais, economizando tempo e esforço. Testemunhar esse nível de automação em ação é realmente notável e destaca a eficácia de nossa implementação de CI/CD.
