@@ -366,7 +366,6 @@ Aqui está uma descrição mais detalhada de cada trabalho:
 - A próxima etapa é modificar o manifesto de implantação para usar a imagem do Docker recém enviada. Isso é feito executando o comando sed.
 - A etapa final é enviar as alterações para o repositório. Isso é feito usando o comando git push.
 
-
 ### Adicione os segredos do DockerHub e do Git
 
 O repositório GitHub acima usa `secrets` para Docker Hub e Git. Para criar `secrets` em um repositório do GitHub, vá em `settings`, selecione `secrets and variables` e clique em `actions` depois em `new repository secret`. Dê um nome e um valor ao segredo e, em seguida, você poderá usá-lo em qualquer lugar do repositório. Os `secrets` são criptografados e armazenados no GitHub, portanto, estão protegidos. Você pode usar `secrets` para armazenar qualquer tipo de informação confidencial, como chaves de API, senhas e tokens.
@@ -405,7 +404,7 @@ Para este projeto foi criado também as seguintes variáveis:
 - **`GIT_USERNAME`** - Username que será associado aos commits da sua conta no GitHub.
 - **`k8S_PATH`** - Caminho dentro do [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) onde se encontra o arquivo de `deployment`.
 
-E foi utilizada a variável de ambiente padrão do GitHub:
+Também foi utilizada a variável de ambiente padrão do GitHub:
 
 - **`GITHUB_RUN_NUMBER`** - Um número exclusivo para cada execução de um fluxo de trabalho específico em um repositório.
 
@@ -585,19 +584,13 @@ A saída do comando será algo parecido com:
 application.argoproj.io/myapp created
 ```
 
-Com a incorporação do ArgoCD em nosso pipeline de implantação, ganhamos recursos de monitoramento contínuo para nosso repositório de manifesto. O ArgoCD observa diligentemente esse repositório e, sempre que são detectadas alterações, inicia rapidamente o processo de sincronização, garantindo que as atualizações mais recentes sejam aplicadas perfeitamente ao nosso cluster Kubernetes.
-
-Ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080), será visto algo como:
+Agora, ao acessar o ArgoCD pelo endereço [http://localhost:8080](http://localhost:8080), será visto algo como:
 
 <div align="center">
 
 ![ArgoCD](./Images/argocd_applications_01.png) </center>
 
 </div>
-
-Durante esta fase de sincronização, o ArgoCD examina cuidadosamente o arquivo de manifesto e avalia o estado atual do cluster Kubernetes. Se os recursos definidos no arquivo de manifesto ainda não existirem no cluster, o ArgoCD entra em ação. Ele orquestra rapidamente a implantação desses novos recursos, garantindo que os componentes de aplicativo desejados sejam provisionados no cluster.
-
-Esse processo automatizado não apenas economiza tempo, mas também elimina o risco de erros manuais que geralmente acompanham a criação e implantação manual de recursos.
 
 Clicando na aplicação `myapp` você poderá ver mais detalhes
 
@@ -607,4 +600,11 @@ Clicando na aplicação `myapp` você poderá ver mais detalhes
 
 </div>
 
-Implementamos com sucesso um fluxo de trabalho de CI/CD altamente eficiente que agora é totalmente automatizado. Como resultado, sempre que um desenvolvedor faz alterações na branh **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), as atualizações são refletidas diretamente no site principal sem qualquer intervenção manual. Esse processo automatizado elimina a necessidade de implantações manuais, economizando tempo e esforço. Testemunhar esse nível de automação em ação é realmente notável e destaca a eficácia de nossa implementação de CI/CD.
+Implementamos com sucesso um fluxo de trabalho de CI/CD altamente eficiente que agora é totalmente automatizado. Como resultado, sempre que um desenvolvedor faz alterações na branch **`MAIN`** do [Repositório do Aplicativo](https://github.com/emanuelfds/App), as atualizações são refletidas diretamente na branch **`MAIN`**  do [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) sem qualquer intervenção manual. Esse processo automatizado elimina a necessidade de implantações manuais, economizando tempo e esforço. Testemunhar esse nível de automação em ação é realmente notável e destaca a eficácia de nossa implementação de CI/CD.
+
+
+Com a incorporação do ArgoCD em nosso pipeline de implantação, ganhamos recursos de monitoramento contínuo para nosso repositório de manifesto. O ArgoCD observa diligentemente esse repositório e, sempre que são detectadas alterações, inicia rapidamente o processo de sincronização, garantindo que as atualizações mais recentes sejam aplicadas perfeitamente ao nosso cluster Kubernetes.
+
+Durante esta fase de sincronização, o ArgoCD examina cuidadosamente o arquivo de manifesto e avalia o estado atual do cluster Kubernetes. Se os recursos definidos no [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) ainda não existirem no cluster, o ArgoCD entra em ação. Ele orquestra rapidamente a implantação desses novos recursos, garantindo que os componentes de aplicativo desejados sejam provisionados no cluster.
+
+Esse processo automatizado não apenas economiza tempo, mas também elimina o risco de erros manuais que geralmente acompanham a criação e implantação manual de recursos.
