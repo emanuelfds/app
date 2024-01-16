@@ -53,6 +53,12 @@ sudo systemctl start k0scontroller
 sudo systemctl enable k0scontroller
 ```
 
+Se desejar configurar por [Taint](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/), executar o comando abaixo
+
+```bash
+sudo k0s install controller --single --labels=apps=services --taints=servicesonly=true:PreferNoSchedule
+```
+
 ### Instalando o kubectl
 
 >**Nota**
@@ -63,6 +69,7 @@ sudo systemctl enable k0scontroller
 ```bash
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 ```
+
 #### Instale o kubectl
 
 ```bash
@@ -99,7 +106,7 @@ Primeiro temos que criar um repositório GitHub e colocar o código do aplicativ
 
 Para o [Repositório do Aplicativo](https://github.com/emanuelfds/App), usaremos um aplicativo Flask simples que exibe uma página com o nome do pod que será empacotado em uma imagem do docker e publicado no DockerHub.
 
-```yaml
+```python
 from flask import Flask, render_template
 from kubernetes import client, config
 import os
@@ -234,7 +241,6 @@ spec:
           requests:
             cpu: 100m
             memory: 64Mi
-
 ```
 
 O arquivo de manifesto acima define uma implantação e serviço do Kubernetes para um aplicativo Flask. A implantação criará uma única réplica do aplicativo, que será exposta na porta 5000. O serviço irá expor o aplicativo na porta 80 e estará acessível por meio do NodePort 30002.
@@ -340,7 +346,6 @@ O arquivo acima define um workflow que será executado a cada push para a ramifi
 - **`Docker`** - Esta Job criará uma imagem do Docker para o aplicativo e a enviará para o Docker Hub.
 
 - **`Modifygit`** - Esta Job modificará o manifesto de implantação no repositório APP-Manifest para usar a imagem do Docker recém-enviada.
-
 
 Aqui está uma descrição mais detalhada de cada trabalho:
 
@@ -462,7 +467,7 @@ Depois de executar o comando de instalação, você pode verificar a implantaç�
 kubectl get pods -n argocd
 ```
 
-Para acessar o painel do ArgoCD, usarei o Port Forwarding para acessar o ArgoCD
+Vamos usar o Port Forwarding para acessar o painel do ArgoCD
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -479,6 +484,7 @@ Para obter a senha, você pode executar o comando abaixo em seu cluster Kubernet
 ```bash
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 ```
+
 ## Criando a aplicação no ArgoCD
 
 Para configurar o ArgoCD para implantar o nosso aplicativo no Kubernetes, será preciso configurar o ArgoCD para conectar o [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) e o Kubernetes de forma declarativa usando YAML para configuração.
@@ -566,6 +572,7 @@ Para aplicar o arquivo de `secret` no Kubernetes, basta executar o seguinte coma
 ```bash
 kubectl apply -f ./Configs/secret.yaml 
 ```
+
 A saída do comando será algo como:
 
 ```bash
