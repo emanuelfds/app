@@ -60,10 +60,16 @@ jobs:
             with:
               image-ref: 'emanuelfds/app:v${{ github.run_number }}'
               format: 'table'
-              exit-code: '0'
+              exit-code: '0'    # if 'exit-code: 1' your pipeline will be interrupted
               ignore-unfixed: true
               vuln-type: 'os,library'
               severity: 'CRITICAL,HIGH'
+          
+          - name: Upload Trivy scan results to GitHub Security tab
+            uses: github/codeql-action/upload-sarif@v2
+            if: always()
+            with:
+              sarif_file: 'trivy-results.sarif'
 
   modifygit:
     needs: docker
