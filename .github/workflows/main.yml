@@ -59,7 +59,6 @@ jobs:
             uses: aquasecurity/trivy-action@master
             with:
               image-ref: 'emanuelfds/app:v${{ github.run_number }}'
-              scan-type: 'config'
               # format: 'table'
               format: 'sarif'
               output: 'trivy-results.sarif'
