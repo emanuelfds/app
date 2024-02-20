@@ -53,6 +53,18 @@ jobs:
               context: ./Application
               push: true
               tags: emanuelfds/app:v${{ github.run_number }}
+              
+
+          - name: Run Trivy vulnerability scanner
+            uses: aquasecurity/trivy-action@master
+            with:
+              image-ref: 'emanuelfds/app:v${{ github.run_number }}'
+              format: 'table'
+              exit-code: '1'
+              ignore-unfixed: true
+              vuln-type: 'os,library'
+              severity: 'CRITICAL,HIGH'
+
   modifygit:
     needs: docker
     runs-on: ubuntu-latest

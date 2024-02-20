@@ -448,8 +448,13 @@ E aplicar executando o seguinte comando:
 ```bash
 kubectl apply -f ./Configs/namespace.yaml 
 ```
+Ou
 
-A saída desse comando será algo parecido com isso:
+```bash
+kubectl create namespace argocd
+```
+
+A saída de ambos os comandos será algo parecido com isso:
 
 ```bash
 namespace/argocd created
