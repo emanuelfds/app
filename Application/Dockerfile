@@ -1,6 +1,6 @@
 # Set the base image to use for subsequent instructions
 #FROM python:3.9-alpine
-FROM python:3.18-alpine
+FROM python:3.13.0a4-alpine3.19
 
 # Set the working directory for any subsequent ADD, COPY, CMD, ENTRYPOINT,
 # or RUN instructions that follow it in the Dockerfile
