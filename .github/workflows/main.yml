@@ -63,11 +63,17 @@ jobs:
               username: ${{ secrets.DOCKERHUB_USERNAME }}
               password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-          - name: Increase version
+          - name: Increase version v1
             if:  github.ref == 'refs/heads/rc'
             run: |
               python increase-version.py component_version ${{ github.ref }}
               echo "NEW_VERSION=$(cat component_version)" >> $GITHUB_ENV
+
+          - name: Increase version V2
+            if: ${{ github.ref == 'rc' }}
+            run: |
+              branch_name=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+              python increase-version.py component_version $branch_name
 
           - name: Build and push
             if: github.ref == 'refs/heads/rc' 
