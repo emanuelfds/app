@@ -65,26 +65,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      # - name: Increase version v1
-      #   if:  github.ref == 'refs/heads/rc'
-      #   run: |
-      #     python increase-version.py component_version ${{ github.ref }}
-      #     echo "NEW_VERSION=$(cat component_version)" >> $GITHUB_ENV
-
-      - name: Increase version V2
+      - name: Set Branch Name
         if: github.ref == 'refs/heads/rc'
         run: |
-          branch_name=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
-          echo "Branch name: $branch_name"
-          python increase-version.py component_version $branch_name
+          echo "::set-env name=BRANCH_NAME::$(echo ${{ github.ref }} | sed 's/refs\/heads\///')"
+          echo "Branch name: $BRANCH_NAME"
+    
+      - name: Increase version
+        if: github.ref == 'refs/heads/rc'
+        run: |
+          python increase-version.py component_version $BRANCH_NAME
 
-      - name: Build and push
-        if: github.ref == 'refs/heads/rc' 
+      - name: Push image to Docker Hub
+        if: github.ref == 'refs/heads/rc'
         uses: docker/build-push-action@v4
         with:
           context: ./Application
           push: true
-          tags: emanuelfds/app:v${{ branch_name }}
+          tags: emanuelfds/app:v${{ env.BRANCH_NAME }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
