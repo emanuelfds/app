@@ -45,7 +45,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
   docker:
         needs: build
-        runs-on: python:3.13.0a4-alpine3.19
+        # runs-on: python:3.13.0a4-alpine3.19
+        runs-on: ubuntu-latest
         steps:
           - name: Checkout
             uses: actions/checkout@v3
