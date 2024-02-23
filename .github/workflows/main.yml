@@ -49,7 +49,7 @@ jobs:
     name: Push Docker image
     needs: build
     # runs-on: python:3.13.0a4-alpine3.19
-    runs-on: emanuelfds/app:v
+    runs-on: emanuelfds/app:v40
     # runs-on: ubuntu-latest
     steps:
       - name: Checkout
