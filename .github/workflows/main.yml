@@ -67,7 +67,7 @@ jobs:
             if:  github.ref == 'refs/heads/rc'
             run: |
               python increase-version.py component_version ${{ github.ref }}
-              echo "::set-env name=NEW_VERSION::$(cat component_version)"
+              echo "NEW_VERSION=$(cat component_version)" >> $GITHUB_ENV
 
           - name: Build and push
             if: github.ref == 'refs/heads/rc' 
