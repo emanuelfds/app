@@ -8,10 +8,10 @@
 
 [![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=https://github.com/emanuelfds)](https://github.com/emanuelfds)
 [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/emanuelfds/)](https://www.linkedin.com/in/emanuelfds/)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/emanuelfds/App/main.yml)
 ![Static Badge](https://img.shields.io/badge/release-v51-blue)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/emanuelfds/app/v51)
 ![GitHub Repo stars](https://img.shields.io/github/stars/emanuelfds/App)
-
 
 ## Breve Introdução
 
