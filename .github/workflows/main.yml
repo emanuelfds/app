@@ -63,11 +63,11 @@ jobs:
               username: ${{ secrets.DOCKERHUB_USERNAME }}
               password: ${{ secrets.DOCKERHUB_TOKEN }}
           
-          - name: Increase version v1
-            if:  github.ref == 'refs/heads/rc'
-            run: |
-              python increase-version.py component_version ${{ github.ref }}
-              echo "NEW_VERSION=$(cat component_version)" >> $GITHUB_ENV
+          # - name: Increase version v1
+          #   if:  github.ref == 'refs/heads/rc'
+          #   run: |
+          #     python increase-version.py component_version ${{ github.ref }}
+          #     echo "NEW_VERSION=$(cat component_version)" >> $GITHUB_ENV
 
           - name: Increase version V2
             if: ${{ github.ref == 'rc' }}
