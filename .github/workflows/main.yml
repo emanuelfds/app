@@ -8,7 +8,7 @@ permissions: write-all
 
 jobs:
   trivy-scanning:
-    name: trivy-sec-scan
+    name: Trivy Scanning
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -75,6 +75,7 @@ jobs:
         if: github.ref == 'refs/heads/rc'
         run: |
           branch_name=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+          echo "Branch name: $branch_name"
           python increase-version.py component_version $branch_name
 
       - name: Build and push
@@ -83,7 +84,7 @@ jobs:
         with:
           context: ./Application
           push: true
-          tags: emanuelfds/app:v${{ env.NEW_VERSION }}
+          tags: emanuelfds/app:v${{ branch_name }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
