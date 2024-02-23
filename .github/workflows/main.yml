@@ -80,7 +80,7 @@ jobs:
       - name: Increase version
         if: github.ref == 'refs/heads/rc'
         run: |
-          python increase-version.py component_version $BRANCH_NAME
+          python increase-version.py component_version rc
 
       - name: Push image to Docker Hub
         if: github.ref == 'refs/heads/rc'
