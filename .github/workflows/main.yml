@@ -82,7 +82,8 @@ jobs:
       - name: Increase version
         if: github.ref == 'refs/heads/rc'
         run: |
-          python3.10 increase-version.py component_version rc
+          python3.10 increase-version.py component_version $BRANCH_NAME"
+          echo "newversion=$(cat component_version)" >> $GITHUB_ENV
 
       - name: Push image to Docker Hub
         if: github.ref == 'refs/heads/rc'
@@ -90,7 +91,7 @@ jobs:
         with:
           context: ./Application
           push: true
-          tags: emanuelfds/app:v${{ env.BRANCH_NAME }}
+          tags: emanuelfds/app:v${{ env.newversion }}
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
