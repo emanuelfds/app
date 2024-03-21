@@ -88,7 +88,7 @@ jobs:
           cat component_version
           newversion=$(cat component_version)
           echo "newversion=$newversion" >> $GITHUB_ENV
-          echo "Component Version: $newversion""
+          echo "Component Version: $newversion"
 
       # - name: Push image to Docker Hub
       #   if: github.ref == 'refs/heads/rc'
