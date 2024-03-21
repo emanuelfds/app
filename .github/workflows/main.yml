@@ -68,12 +68,13 @@ jobs:
         run: echo "BRANCH_NAME=${BRANCH_NAME}"
         
         
-      # - name: Set Branch Name
-      #   if: github.ref == 'refs/heads/rc'
-      #   run: |
-      #     echo "GitHub Ref: ${{ github.ref }}"
-      #     echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
-      #     echo "Branch name: $BRANCH_NAME"
+      - name: Set Branch Name
+        if: github.ref == 'refs/heads/rc'
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+          # echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+          BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+          echo "Branch name: $BRANCH_NAME"
     
       # - name: Increase version
       #   if: github.ref == 'refs/heads/rc'
