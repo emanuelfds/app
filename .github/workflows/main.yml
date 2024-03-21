@@ -90,6 +90,7 @@ jobs:
           echo "newversion=$newversion" >> $GITHUB_ENV
           echo "Component Version: $newversion"
           echo "$newversion" > component_version
+          touch teste.txt
 
 
       # - name: Push image to Docker Hub
