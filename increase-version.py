@@ -7,12 +7,6 @@ NUMBER_SPRINT = 0
 NUMBER_DEV = 1
 NUMBER_RC = 2
 
-def increase_version(file_path, branch_name):
-    # Abrir o arquivo component_version
-    with open(file_path, 'r') as file:
-        content = file.read()
-
-
 if len(sys.argv) == 3:
     fileInput = open(sys.argv[FILE_NAME], 'r')
     branchName = sys.argv[BRANCH_NAME]
@@ -41,14 +35,3 @@ if len(sys.argv) == 3:
 elif BRANCH_NAME not in ["main", "develop", "rc"]:      
     print('Parameters: <file name>')
     print('For example: python increase-version.py component_version')
-
-    # Salvar o arquivo de volta
-    with open(file_path, 'w') as file:
-        file.write(content)
-
-# Capturar argumentos da linha de comando
-file_path = sys.argv[1]
-branch_name = sys.argv[2]
-
-# Chamar a função para aumentar a versão
-increase_version(file_path, branch_name)
