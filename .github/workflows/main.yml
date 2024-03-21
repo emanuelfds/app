@@ -75,17 +75,21 @@ jobs:
           echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
           BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
           echo "Branch name: $BRANCH_NAME"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Print Branch Name
+        run: | 
           echo "Branch name: ${{ env.BRANCH_NAME }}"
     
-      - name: Increase version
-        if: github.ref == 'refs/heads/rc'
-        run: |
-          echo "Branch name: $BRANCH_NAME"
-          python3.10 increase-version.py component_version $BRANCH_NAME
-          echo "newversion=$(cat component_version)" >> $GITHUB_ENV
-          echo "newversion=$(cat component_version)" > component_version
-          echo "Component Version: $newversion"
-          echo "Componente Version 2: ${{ env.newversion }}"
+      # - name: Increase version
+      #   if: github.ref == 'refs/heads/rc'
+      #   run: |
+      #     echo "Branch name: $BRANCH_NAME"
+      #     python3.10 increase-version.py component_version $BRANCH_NAME
+      #     echo "newversion=$(cat component_version)" >> $GITHUB_ENV
+      #     echo "newversion=$(cat component_version)" > component_version
+      #     echo "Component Version: $newversion"
+      #     echo "Componente Version 2: ${{ env.newversion }}"
 
       # - name: Push image to Docker Hub
       #   if: github.ref == 'refs/heads/rc'
