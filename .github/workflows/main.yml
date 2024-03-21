@@ -72,7 +72,6 @@ jobs:
         if: github.ref == 'refs/heads/rc'
         run: |
           echo "GitHub Ref: ${{ github.ref }}"
-          echo "BRANCH_NAME=${BRANCH_NAME}"
           # echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
           BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
           echo "Branch name: $BRANCH_NAME"
@@ -80,6 +79,7 @@ jobs:
       - name: Increase version
         if: github.ref == 'refs/heads/rc'
         run: |
+          echo "Branch name: $BRANCH_NAME"
           python3.10 increase-version.py component_version $BRANCH_NAME
           echo "newversion=$(cat component_version)" >> $GITHUB_ENV
           echo "newversion=$(cat component_version)" > component_version
