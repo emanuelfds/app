@@ -9,25 +9,8 @@ on:
 permissions: write-all
 
 jobs:
-  #   trivy-scanning:
-  #   name: Trivy Scanning
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-      # - name: Run Trivy vulnerability scanner in repo mode
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     scan-type: 'fs'
-      #     ignore-unfixed: true
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-      #     severity: 'HIGH,CRITICAL'
-
   build:
     name: Build Docker image
-    # needs: trivy-scanning
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -50,8 +33,6 @@ jobs:
   docker:
     name: Push Docker image
     needs: build
-    # runs-on: python:3.13.0a4-alpine3.19
-    # runs-on: emanuelfds/app:v40
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -88,6 +69,7 @@ jobs:
           echo "newversion=$(cat component_version)" >> $GITHUB_ENV
           echo "newversion=$(cat component_version)" > component_version
           echo "Component Version: $newversion"
+          echo "Componente Version 2: ${{ env.newversion }}"
 
       - name: Push image to Docker Hub
         if: github.ref == 'refs/heads/rc'
@@ -97,24 +79,30 @@ jobs:
           push: true
           tags: emanuelfds/app:v${{ env.newversion }}
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'emanuelfds/app:v${{ github.run_number }}'
-          # format: 'table'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          # if 'exit-code: 1' your pipeline will be interrupted
-          exit-code: '0'    
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+  # trivy-scanning-docker-hub:
+  #   name: Trivy Scanner Docker Hub
+  #   needs: docker
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: 'emanuelfds/app:${{ needs.login-repo.outputs.runner_version }}'
+  #         format: 'table' # sarif
+  #         exit-code: '0'  # if 'exit-code: 1' your pipeline will be interrupted
+  #         ignore-unfixed: true
+  #         vuln-type: 'os,library'
+  #         severity: 'CRITICAL,HIGH,MEDIUM'
+
+  #     - name: Upload Trivy scan results to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v3
+  #       if: always()
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'
+
 
   # modifygit:
   #   needs: docker
