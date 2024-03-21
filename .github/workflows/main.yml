@@ -55,6 +55,10 @@ jobs:
         run: |
           echo "GitHub Ref: ${{ github.ref }}"
 
+      - name: Imprimir GitHub Ref
+        run: |
+          echo "GitHub Ref: ${{ github.ref }}"
+        
       - name: Set Branch Name
         if: github.ref == 'refs/heads/rc'
         run: |
