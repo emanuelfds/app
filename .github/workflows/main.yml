@@ -87,9 +87,7 @@ jobs:
           python3.10 increase-version2.py component_version ${{ env.BRANCH_NAME }}
           cat component_version
           echo "newversion=$(cat component_version)" >> $GITHUB_ENV
-          echo "newversion=$(cat component_version)" > component_version
           echo "Component Version: $newversion"
-          echo "Componente Version 2: ${{ env.newversion }}"
 
       # - name: Push image to Docker Hub
       #   if: github.ref == 'refs/heads/rc'
