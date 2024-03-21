@@ -84,7 +84,7 @@ jobs:
       - name: Increase version
         if: github.ref == 'refs/heads/rc'
         run: |
-          python3.10 increase-version.py component_version ${{ env.BRANCH_NAME }}
+          python3.10 increase-version.py component_version ${{ env.BRANCH_NAME }} > component_version
           cat component_version
           echo "newversion=$(cat component_version)" >> $GITHUB_ENV
           echo "newversion=$(cat component_version)" > component_version
