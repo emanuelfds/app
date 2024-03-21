@@ -77,6 +77,8 @@ jobs:
           echo "Branch name: $BRANCH_NAME"
           python3.10 increase-version.py component_version $BRANCH_NAME
           echo "newversion=$(cat component_version)" > component_version
+          echo "Component Version: $component_version"
+          echo "Component Version: $newversion"
     
       - name: Increase version
         if: github.ref == 'refs/heads/rc'
