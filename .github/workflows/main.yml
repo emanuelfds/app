@@ -94,9 +94,8 @@ jobs:
           git config --global user.email "emanuelfds@gmail.com"
           git config --global user.name "Emanuel Fernandes"
           git add component_version
-          git commit -m "[skip ci] Increment version in component_version for $newversion"
+          git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
-
 
       # - name: Push image to Docker Hub
       #   if: github.ref == 'refs/heads/rc'
