@@ -9,30 +9,30 @@ on:
 permissions: write-all
 
 jobs:
-  build:
-    name: Build Docker image
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  # build:
+  #   name: Build Docker image
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Set up Python 3.10
+  #     uses: actions/setup-python@v3
+  #     with:
+  #       python-version: "3.10"
+  #   - name: Install dependencies
+  #     run: |
+  #       python -m pip install --upgrade pip
+  #       pip install flake8 pytest
+  #       if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+  #   - name: Lint with flake8
+  #     run: |
+  #       # stop the build if there are Python syntax errors or undefined names
+  #       flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  #       # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+  #       flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   docker:
     name: Push Docker image
-    needs: build
+    # needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,30 +58,39 @@ jobs:
       - name: Imprimir GitHub Ref
         run: |
           echo "GitHub Ref: ${{ github.ref }}"
-        
-      - name: Set Branch Name
-        if: github.ref == 'refs/heads/rc'
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
-          echo "Branch name: $BRANCH_NAME"
-    
-      - name: Increase version
-        if: github.ref == 'refs/heads/rc'
-        run: |
-          python3.10 increase-version.py component_version $BRANCH_NAME
-          echo "newversion=$(cat component_version)" >> $GITHUB_ENV
-          echo "newversion=$(cat component_version)" > component_version
-          echo "Component Version: $newversion"
-          echo "Componente Version 2: ${{ env.newversion }}"
 
-      - name: Push image to Docker Hub
-        if: github.ref == 'refs/heads/rc'
-        uses: docker/build-push-action@v4
-        with:
-          context: ./Application
-          push: true
-          tags: emanuelfds/app:v${{ env.newversion }}
+      - name: Depurar Sed
+        run: |
+          BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
+          echo "BRANCH_NAME=${BRANCH_NAME}"
+        
+      - name: Imprimir BRANCH_NAME
+        run: echo "BRANCH_NAME=${BRANCH_NAME}"
+        
+        
+      # - name: Set Branch Name
+      #   if: github.ref == 'refs/heads/rc'
+      #   run: |
+      #     echo "GitHub Ref: ${{ github.ref }}"
+      #     echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+      #     echo "Branch name: $BRANCH_NAME"
+    
+      # - name: Increase version
+      #   if: github.ref == 'refs/heads/rc'
+      #   run: |
+      #     python3.10 increase-version.py component_version $BRANCH_NAME
+      #     echo "newversion=$(cat component_version)" >> $GITHUB_ENV
+      #     echo "newversion=$(cat component_version)" > component_version
+      #     echo "Component Version: $newversion"
+      #     echo "Componente Version 2: ${{ env.newversion }}"
+
+      # - name: Push image to Docker Hub
+      #   if: github.ref == 'refs/heads/rc'
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: ./Application
+      #     push: true
+      #     tags: emanuelfds/app:v${{ env.newversion }}
 
   # trivy-scanning-docker-hub:
   #   name: Trivy Scanner Docker Hub
