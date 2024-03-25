@@ -3,7 +3,8 @@ name: Python application
 on:
   push:
     branches: [ "rc", "develop"]
-  workflow_dispatch:
+  
+  pull_request:
     branches: [ "main" ]
 
 permissions: write-all
@@ -13,16 +14,21 @@ jobs:
     name: Build Docker image
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+
+    - name: Checkout Repository  
+      uses: actions/checkout@v4
+    
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -95,8 +101,8 @@ jobs:
           echo "Component Version: $newversion"
 
           # Commit e push das alterações de volta para o repositório
-          git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name "Emanuel Fernandes"
+          git config --global user.email ${{ vars.GIT_EMAIL }}
+          git config --global user.name ${{ vars.GIT_USERNAME }}
           git add component_version
           git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
@@ -122,15 +128,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'
-          format: 'table' # sarif
+          format: 'table'
+          # format: 'sarif'
+          # output: 'trivy-results.sarif'
           exit-code: '0'  # if 'exit-code: 1' your pipeline will be interrupted
-          ignore-unfixed: true
+          ignore-unfixed: true # ignore unfixed vulnerabilities
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
 
@@ -140,12 +148,26 @@ jobs:
   #       with:
   #         sarif_file: 'trivy-results.sarif'
 
+      - name: Run Trivy vulnerability scanner in IaC mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './Configs'
+          hide-progress: false
+          # output format (table, json, sarif)
+          format: table
+          # format: 'sarif'
+          # output: 'trivy-results.sarif'
+          exit-code: '0' # if 'exit-code: 1' your pipeline will be interrupted
+          ignore-unfixed: true  # ignore unfixed vulnerabilities
+          # severities of vulnerabilities to be displayed
+          severity: 'CRITICAL,HIGH,MEDIUM'
 
   # modifygit:
   #   needs: docker
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #       name: changing the deployment of git repo
   #       with:
   #         repository: 'emanuelfds/App-Manifest'
