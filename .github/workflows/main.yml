@@ -159,7 +159,7 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      - name: Upload Docker Hub Trivy scan results to GitHub Security tab
+      - name: Upload Trivy scan results to GitHub Security tab - Configs
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
@@ -189,3 +189,4 @@ jobs:
   #         git push origin main
   #       env:
   #         RUN_NUMBER: ${{ github.run_number }}
+  
