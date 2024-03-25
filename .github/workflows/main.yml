@@ -115,34 +115,42 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'
-          format: 'table'
-          # format: 'sarif'
-          # output: 'trivy-results.sarif'
-          exit-code: '0'  # if 'exit-code: 1' your pipeline will be interrupted
-          ignore-unfixed: true # ignore unfixed vulnerabilities
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'  # Docker image reference
+          format: 'sarif'                                                             # output format of scan results (table, json, sarif)
+          output: 'trivy-results.sarif'                                               # location where vulnerability scan results will be recorded
+          exit-code: '0'                                                              # if 'exit-code: 1' your pipeline will be interrupted
+          ignore-unfixed: true                                                        # ignore unfixed vulnerabilities
+          vuln-type: 'os,library'                                                     # type of vulnerabilities to be displayed
+          severity: 'CRITICAL,HIGH,MEDIUM'                                            # severities of vulnerabilities to be displayed
 
-  #     - name: Upload Trivy scan results to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       if: always()
-  #       with:
-  #         sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-docker-hub.sarif'
 
-      - name: Run Trivy vulnerability scanner in IaC mode
+      - name: Run Trivy vulnerability scanner in IaC mode - Application
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
-          scan-ref: './Configs'
+          scan-ref: './Application'
           hide-progress: false
-          # output format (table, json, sarif)
-          format: table
-          # format: 'sarif'
-          # output: 'trivy-results.sarif'
-          exit-code: '0' # if 'exit-code: 1' your pipeline will be interrupted
-          ignore-unfixed: true  # ignore unfixed vulnerabilities
-          # severities of vulnerabilities to be displayed
+          format: 'sarif'
+          output: 'trivy-results-application.sarif'
+          exit-code: '0' 
+          ignore-unfixed: true          
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Run Trivy vulnerability scanner in IaC mode - Configs
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: './Application'
+          hide-progress: false
+          format: 'sarif'
+          output: 'trivy-results-configs.sarif'
+          exit-code: '0' 
+          ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
 
   # modifygit:
