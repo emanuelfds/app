@@ -83,7 +83,7 @@ jobs:
           echo "Component Version: $newversion"
 
           # Commit e push das alterações de volta para o repositório
-          git config --global user.email ${{ vars.GIT_EMAIL }}
+          git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global user.name ${{ vars.GIT_USERNAME }}
           git add component_version
           git commit -m "Increment version in component_version for $newversion"
@@ -157,7 +157,7 @@ jobs:
   #         persist-credentials: true
   #     - name: modify the image
   #       run: |
-  #         git config user.email ${{ vars.GIT_EMAIL }}
+  #         git config user.email ${{ secrets.GIT_EMAIL }}
   #         git config user.name "${{ vars.GIT_USERNAME }}"
   #         pwd
   #         cat ${{ vars.K8S_PATH }}/deployment.yaml
