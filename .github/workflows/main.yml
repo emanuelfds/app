@@ -97,13 +97,13 @@ jobs:
           git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
 
-      # - name: Push image to Docker Hub
-      #   if: github.ref == 'refs/heads/rc'
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: ./Application
-      #     push: true
-      #     tags: emanuelfds/app:v${{ env.newversion }}
+      - name: Push image to Docker Hub
+        if: github.ref == 'refs/heads/rc'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./Application
+          push: true
+          tags: emanuelfds/app:v${{ env.newversion }}
 
   # trivy-scanning-docker-hub:
   #   name: Trivy Scanner Docker Hub
