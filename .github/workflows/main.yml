@@ -59,25 +59,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      # - name: Debug GitHub Ref
-      #   if: github.ref == 'refs/heads/rc'
-      #   run: |
-      #     echo "GitHub Ref: ${{ github.ref }}"
-
-      # - name: Imprimir GitHub Ref
-      #   run: |
-      #     echo "GitHub Ref: ${{ github.ref }}"
-
-      # - name: Depurar Sed
-      #   run: |
-      #     BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's/refs\/heads\///')
-      #     echo "BRANCH_NAME=${BRANCH_NAME}"
-        
-      # - name: Imprimir BRANCH_NAME
-      #   run: echo "BRANCH_NAME=${BRANCH_NAME}"
-        
-        
+                
       - name: Set Branch Name
         if: github.ref == 'refs/heads/rc'
         run: |
