@@ -117,7 +117,7 @@ jobs:
         with:
           image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'  # Docker image reference
           format: 'sarif'                                                             # output format of scan results (table, json, sarif)
-          output: 'trivy-results.sarif'                                               # location where vulnerability scan results will be recorded
+          output: 'trivy-results-docker-hub.sarif.sarif'                                               # location where vulnerability scan results will be recorded
           exit-code: '0'                                                              # if 'exit-code: 1' your pipeline will be interrupted
           ignore-unfixed: true                                                        # ignore unfixed vulnerabilities
           vuln-type: 'os,library'                                                     # type of vulnerabilities to be displayed
