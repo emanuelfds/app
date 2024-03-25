@@ -141,17 +141,29 @@ jobs:
           ignore-unfixed: true          
           severity: 'CRITICAL,HIGH,MEDIUM'
 
+      - name: Upload Trivy scan results to GitHub Security tab - Application
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-application.sarif'
+
       - name: Run Trivy vulnerability scanner in IaC mode - Configs
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
-          scan-ref: './Application'
+          scan-ref: './Configs'
           hide-progress: false
           format: 'sarif'
           output: 'trivy-results-configs.sarif'
           exit-code: '0' 
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Docker Hub Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-configs.sarif'
 
   # modifygit:
   #   needs: docker
