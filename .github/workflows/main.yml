@@ -146,6 +146,7 @@ jobs:
         if: always()
         with:
           sarif_file: 'trivy-results-application.sarif'
+          category: 'TrivyScanResults'
 
       - name: Run Trivy vulnerability scanner in IaC mode - Configs
         uses: aquasecurity/trivy-action@master
