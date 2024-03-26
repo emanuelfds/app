@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Include common steps
-        uses: ./.github/workflows/build.yml
+        uses: ./.github/workflows/build.yaml
 
   #   - name: Checkout Repository  
   #     uses: actions/checkout@v4
