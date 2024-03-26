@@ -2,16 +2,17 @@ name: Python application
 
 on:
   push:
-    branches: [ "rc", "develop"]
+    branches: [ "develop" ]
   
   pull_request:
     branches: [ "main" ]
 
 permissions: write-all
 
+
 jobs:
-  build:
-    name: Build Docker image
+  dependencies:
+    name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
 
@@ -36,9 +37,9 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  docker:
+  build:
     name: Push Docker image
-    needs: build
+    needs: dependencies
     runs-on: ubuntu-latest
 
     outputs:
@@ -106,7 +107,7 @@ jobs:
 
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
-    needs: docker
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -115,9 +116,9 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'  # Docker image reference
+          image-ref: 'emanuelfds/app:v${{ needs.build.outputs.component_version }}'   # Docker image reference
           format: 'sarif'                                                             # output format of scan results (table, json, sarif)
-          output: 'trivy-results-docker-hub.sarif'                                               # location where vulnerability scan results will be recorded
+          output: 'trivy-results-docker-hub.sarif'                                    # location where vulnerability scan results will be recorded
           exit-code: '0'                                                              # if 'exit-code: 1' your pipeline will be interrupted
           ignore-unfixed: true                                                        # ignore unfixed vulnerabilities
           vuln-type: 'os,library'                                                     # type of vulnerabilities to be displayed
@@ -168,12 +169,13 @@ jobs:
           category: 'TrivyScanResultsConfigs'
 
   # modifygit:
-  #   needs: docker
+  #   needs: build
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v4
   #       name: changing the deployment of git repo
   #       with:
+  #         ref: 'nome-da-sua-branch' # TESTAR
   #         repository: 'emanuelfds/App-Manifest'
   #         token: ${{ secrets.GIT_PAT }}
   #         persist-credentials: true
