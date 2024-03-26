@@ -11,8 +11,8 @@ permissions: write-all
 
 
 jobs:
-  build:
-    name: Build Docker image
+  dependencies:
+    name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
 
@@ -37,9 +37,9 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  docker:
+  build:
     name: Push Docker image
-    needs: build
+    needs: dependencies
     runs-on: ubuntu-latest
 
     outputs:
@@ -107,7 +107,7 @@ jobs:
 
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
-    needs: docker
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
