@@ -12,33 +12,30 @@ permissions: write-all
 
 jobs:
   build:
-  
-  #   name: Build Docker image
+    name: Build Docker image
     runs-on: ubuntu-latest
     steps:
-      - name: Include common steps
-        uses: ./.github/workflows/build.yaml
 
-  #   - name: Checkout Repository  
-  #     uses: actions/checkout@v4
+    - name: Checkout Repository  
+      uses: actions/checkout@v4
     
-  #   - name: Set up Python 3.10
-  #     uses: actions/setup-python@v3
-  #     with:
-  #       python-version: "3.10"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
 
-  #   - name: Install dependencies
-  #     run: |
-  #       python -m pip install --upgrade pip
-  #       pip install flake8 pytest
-  #       if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-  #   - name: Lint with flake8
-  #     run: |
-  #       # stop the build if there are Python syntax errors or undefined names
-  #       flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-  #       # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-  #       flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
   docker:
     name: Push Docker image
@@ -121,7 +118,7 @@ jobs:
         with:
           image-ref: 'emanuelfds/app:v${{ needs.docker.outputs.component_version }}'  # Docker image reference
           format: 'sarif'                                                             # output format of scan results (table, json, sarif)
-          output: 'trivy-results-docker-hub.sarif'                                               # location where vulnerability scan results will be recorded
+          output: 'trivy-results-docker-hub.sarif'                                    # location where vulnerability scan results will be recorded
           exit-code: '0'                                                              # if 'exit-code: 1' your pipeline will be interrupted
           ignore-unfixed: true                                                        # ignore unfixed vulnerabilities
           vuln-type: 'os,library'                                                     # type of vulnerabilities to be displayed
@@ -178,6 +175,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #       name: changing the deployment of git repo
   #       with:
+  #         ref: 'nome-da-sua-branch' # TESTAR
   #         repository: 'emanuelfds/App-Manifest'
   #         token: ${{ secrets.GIT_PAT }}
   #         persist-credentials: true
