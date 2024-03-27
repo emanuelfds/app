@@ -101,13 +101,13 @@ jobs:
           persist-credentials: true
       - name: modify the image
         run: |
-          git config user.email ${{ vars.GIT_EMAIL }}
+          git config user.email ${{ secrets.GIT_EMAIL }}
           git config user.name "${{ vars.GIT_USERNAME }}"
           pwd
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          # sed -i "s+version:.*+version: ${{ github.run_number }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          sed -i "s+version:.*+version: ${{ github.run_number }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
           git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
