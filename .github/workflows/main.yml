@@ -40,11 +40,11 @@ jobs:
 
   deploy-dev:
     name: Push Docker image
-    needs: dependencies
+    needs: [dependencies]
     runs-on: ubuntu-latest
     environment: 
       name: dev
-      url: 'https://emanuelfds.com'
+      url: 'https://dev.emanuelfds.com'
 
     outputs:
       component_version: ${{ steps.extract_component_version.outputs.component_version }}
@@ -112,7 +112,7 @@ jobs:
 
   deploy-prd:
     name: Push Docker image
-    needs: deploy-dev
+    needs: [deploy-dev]
     runs-on: ubuntu-latest
     environment: 
       name: prd
@@ -163,6 +163,7 @@ jobs:
           git pull
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global user.name ${{ vars.GIT_USERNAME }}
+          git pull
           git add component_version
           git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
@@ -185,7 +186,7 @@ jobs:
   
   trivy-scanning-docker-hub:
     name: Trivy Scanner Docker Hub
-    needs: deploy-dev
+    needs: [deploy-prd]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -194,7 +195,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'emanuelfds/app:v${{ needs.deploy-dev.outputs.component_version }}'    # Docker image reference
+          image-ref: 'emanuelfds/app:v${{ needs.deploy-prd.outputs.component_version }}'    # Docker image reference
           format: 'sarif'                                                                   # output format of scan results (table, json, sarif)
           output: 'trivy-results-docker-hub.sarif'                                          # location where vulnerability scan results will be recorded
           exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
