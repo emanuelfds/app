@@ -104,7 +104,7 @@ jobs:
       url: 'https://emanuelfds.com'
 
     outputs:
-      component_version_prd: ${{ steps.extract_component_version.outputs.component_version_prd }}
+      component_version_prd: ${{ steps.extract_component_version_prd.outputs.component_version_prd }}
 
     steps:
       - name: Checkout
@@ -154,7 +154,7 @@ jobs:
         run: echo "::set-output name=component_version::$(cat component_version)"
   
       - name: Show component version PRD
-        run: echo "Extracted version is ${{ steps.extract_component_version.outputs.component_version_prd }}"
+        run: echo "Extracted version is ${{ steps.extract_component_version_prd.outputs.component_version_prd }}"
 
       - name: Push image to Docker Hub
         uses: docker/build-push-action@v4
@@ -252,5 +252,3 @@ jobs:
           git add .
           git commit -m 'Versão da Aplicação alterada para a TAG: ${{ needs.deploy-prd.outputs.component_version_prd }}'
           git push origin main
-        env:
-          RUN_NUMBER: ${{ github.run_number }}
