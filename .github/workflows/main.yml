@@ -108,7 +108,6 @@ jobs:
           context: ./Application
           push: true
           tags: emanuelfds/app:v${{ env.newversion }}
-
           
 
   deploy-prd:
