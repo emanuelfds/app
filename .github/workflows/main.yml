@@ -139,20 +139,31 @@ jobs:
                 
       - name: Increase version PRD
         run: |
-          git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name ${{ vars.GIT_USERNAME }}
+          git config --global user.email "${{ secrets.GIT_EMAIL }}"
+          git config --global user.name "${{ vars.GIT_USERNAME }}"
+          
+          # Clonar o repositório e entrar no diretório
           git clone https://github.com/emanuelfds/App.git
           cd App
-          python3.10 increase_version_env.py component_version prd
-          # cat component_version
-          newversion=$(cat component_version)
-          echo "newversion=$newversion" >> $GITHUB_ENV
-          echo "Component Version: $newversion"
-          git add component_version
-          git commit -m "Increment version in component_version for $newversion in PRD"
-          git remote set-url origin https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/emanuelfds/App.git
-          git push origin ${{ github.ref }}
           
+          # Aumentar a versão
+          python3.10 increase_version_env.py component_version prd
+          newversion=$(<component_version)
+          
+          # Definir nova versão como uma variável de ambiente
+          echo "newversion=${newversion}" >> $GITHUB_ENV
+          echo "Component Version: ${newversion}"
+          
+          # Adicionar, commit e push das alterações
+          git add component_version
+          git commit -m "Increment version in component_version for ${newversion} in PRD"
+          
+          # Configurar a URL remota com o token de acesso pessoal
+          git remote set-url origin "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY_OWNER}/App.git"
+          
+          # Push para a branch correspondente
+          git push origin "${{ github.ref }}"
+        
           
 
       - name: Extract component version PRD
