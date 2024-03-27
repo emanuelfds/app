@@ -161,10 +161,10 @@ jobs:
           # Commit e push das alterações de volta para o repositório
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global user.name ${{ vars.GIT_USERNAME }}
-          git pull --tags origin ${{ github.ref }}
           git add component_version
           git commit -m "Increment version in component_version for $newversion in PRD"
           git push origin ${{ github.ref }}
+          git pull --tags origin ${{ github.ref }}
 
       - name: Extract component version PRD
         id: extract_component_version
