@@ -180,7 +180,7 @@ jobs:
           echo "Component Version: $newversion"
           git add component_version
           git commit -m "Increment version in component_version for $newversion in PRD"
-          git push origin ${{ github.ref }}
+          git push origin main
           
           
 
