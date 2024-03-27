@@ -169,7 +169,9 @@ jobs:
 
       - name: Increase version PRD
         run: |
-          git clone https://github.comemanuelfds/App.git
+          git config --global user.email ${{ secrets.GIT_EMAIL }}
+          git config --global user.name ${{ vars.GIT_USERNAME }}
+          git clone https://github.com/emanuelfds/App.git
           cd App
           python3.10 increase_version_env.py component_version prd
           # cat component_version
