@@ -105,6 +105,7 @@ jobs:
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          sed -i "s+version:.*+version: $RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
           git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
