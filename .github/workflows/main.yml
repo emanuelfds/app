@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: dev
-      url: 'emanuelfds.com'
+      url: 'https://emanuelfds.com'
 
     outputs:
       component_version: ${{ steps.extract_component_version.outputs.component_version }}
@@ -65,23 +65,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
                 
-      - name: Set Branch Name
-        if: github.ref == 'refs/heads/develop'
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
-          BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
-          echo "Branch name: $BRANCH_NAME"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+      # - name: Set Branch Name
+      #   if: github.ref == 'refs/heads/develop'
+      #   run: |
+      #     echo "GitHub Ref: ${{ github.ref }}"
+      #     echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+      #     BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+      #     echo "Branch name: $BRANCH_NAME"
+      #     echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Print Branch Name
-        run: | 
-          echo "Branch name: ${{ env.BRANCH_NAME }}"
+      # - name: Print Branch Name
+      #   run: | 
+      #     echo "Branch name: ${{ env.BRANCH_NAME }}"
     
-      - name: Increase version
-        if: github.ref == 'refs/heads/develop'
+      - name: Increase version Dev
+        # if: github.ref == 'refs/heads/develop'
         run: |
-          python3.10 increase-version3.py component_version ${{ env.BRANCH_NAME }}
+          python3.10 increase_version_env.py component_version dev
           # cat component_version
           newversion=$(cat component_version)
           echo "newversion=$newversion" >> $GITHUB_ENV
@@ -94,15 +94,15 @@ jobs:
           git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
 
-      - name: Extract component version
+      - name: Extract component version Dev
         id: extract_component_version
         run: echo "::set-output name=component_version::$(cat component_version)"
   
-      - name: Show component version
+      - name: Show component version Dev
         run: echo "Extracted version is ${{ steps.extract_component_version.outputs.component_version }}"
 
       - name: Push image to Docker Hub
-        if: github.ref == 'refs/heads/develop'
+        # if: github.ref == 'refs/heads/develop'
         uses: docker/build-push-action@v4
         with:
           context: ./Application
@@ -138,23 +138,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
                 
-      - name: Set Branch Name
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
-          BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
-          echo "Branch name: $BRANCH_NAME"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+      # - name: Set Branch Name
+      #   if: github.ref == 'refs/heads/main'
+      #   run: |
+      #     echo "GitHub Ref: ${{ github.ref }}"
+      #     echo "BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')" >> $GITHUB_ENV
+      #     BRANCH_NAME=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+      #     echo "Branch name: $BRANCH_NAME"
+      #     echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Print Branch Name
-        run: | 
-          echo "Branch name: ${{ env.BRANCH_NAME }}"
+      # - name: Print Branch Name
+      #   run: | 
+      #     echo "Branch name: ${{ env.BRANCH_NAME }}"
     
-      - name: Increase version
-        if: github.ref == 'refs/heads/main'
+      - name: Increase version PRD
+        # if: github.ref == 'refs/heads/main'
         run: |
-          python3.10 increase-version3.py component_version ${{ env.BRANCH_NAME }}
+          python3.10 increase_version_env.py component_version prd
           # cat component_version
           newversion=$(cat component_version)
           echo "newversion=$newversion" >> $GITHUB_ENV
@@ -167,15 +167,15 @@ jobs:
           git commit -m "Increment version in component_version for $newversion"
           git push origin ${{ github.ref }}
 
-      - name: Extract component version
+      - name: Extract component version PRD
         id: extract_component_version
         run: echo "::set-output name=component_version::$(cat component_version)"
   
-      - name: Show component version
+      - name: Show component version PRD
         run: echo "Extracted version is ${{ steps.extract_component_version.outputs.component_version }}"
 
       - name: Push image to Docker Hub
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v4
         with:
           context: ./Application
