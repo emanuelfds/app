@@ -117,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: prd
-      url: 'emanuelfds.com'
+      url: 'https://emanuelfds.com'
 
     outputs:
       component_version: ${{ steps.extract_component_version.outputs.component_version }}
