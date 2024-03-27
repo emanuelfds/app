@@ -2,253 +2,112 @@ name: Python application
 
 on:
   push:
-    branches: [ "develop" , "main"  ]
-  
-  pull_request:
     branches: [ "main" ]
-  # workflow_dispatch:
 
 permissions: write-all
 
-
 jobs:
-  dependencies:
-    name: Install Dependencies
+  trivy-scanning:
+    name: trivy-sec-scan
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    - name: Checkout Repository  
-      uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
     
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  build:
+    needs: trivy-scanning
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+  docker:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+          -
+            name: Checkout
+            uses: actions/checkout@v3
+          -
+            name: Set up QEMU
+            uses: docker/setup-qemu-action@v2
+          -
+            name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v2
+          -
+            name: Login to Docker Hub
+            uses: docker/login-action@v2
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+          -
+            name: Build and push
+            uses: docker/build-push-action@v4
+            with:
+              context: ./Application
+              push: true
+              tags: emanuelfds/app:v${{ github.run_number }}
 
-  deploy-dev:
-    name: Push Docker image
-    needs: [dependencies]
-    runs-on: ubuntu-latest
-    environment: 
-      name: dev
-      url: 'https://dev.emanuelfds.com'
-
-    outputs:
-      component_version: ${{ steps.extract_component_version.outputs.component_version }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
-      - name: Increase version Dev
-        run: |
-          python3.10 increase_version_env.py component_version dev
-          # cat component_version
-          newversion=$(cat component_version)
-          echo "newversion=$newversion" >> $GITHUB_ENV
-          echo "Component Version: $newversion"
-
-          # Commit e push das alterações de volta para o repositório
-          git config --global user.email ${{ secrets.GIT_EMAIL }}
-          git config --global user.name ${{ vars.GIT_USERNAME }}
-          git add component_version
-          git commit -m "Increment version in component_version for $newversion in DEV"
-          git push origin ${{ github.ref }}
-
-      - name: Extract component version Dev
-        id: extract_component_version
-        run: echo "::set-output name=component_version::$(cat component_version)"
-  
-      - name: Show component version Dev
-        run: echo "Extracted version is ${{ steps.extract_component_version.outputs.component_version }}"
-
-      - name: Push image to Docker Hub
-        uses: docker/build-push-action@v4
-        with:
-          context: ./Application
-          push: true
-          tags: emanuelfds/app:v${{ env.newversion }}
-          
-
-  deploy-prd:
-    name: Push Docker image
-    needs: [deploy-dev]
-    runs-on: ubuntu-latest
-    environment: 
-      name: prd
-      url: 'https://emanuelfds.com'
-
-    outputs:
-      component_version_prd: ${{ steps.extract_component_version_prd.outputs.component_version_prd }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-                
-      - name: Increase version PRD
-        run: |
-          git config --global user.email "${{ secrets.GIT_EMAIL }}"
-          git config --global user.name "${{ vars.GIT_USERNAME }}"
-          
-          # Clonar o repositório e entrar no diretório
-          git clone https://github.com/emanuelfds/App.git
-          cd App
-          
-          # Aumentar a versão
-          python3.10 increase_version_env.py component_version prd
-          newversion=$(<component_version)
-          
-          # Definir nova versão como uma variável de ambiente
-          echo "newversion=${newversion}" >> $GITHUB_ENV
-          echo "Component Version: ${newversion}"
-          
-          # Adicionar, commit e push das alterações
-          git add component_version
-          git commit -m "Increment version in component_version for ${newversion} in PRD"
-          
-          # Configurar a URL remota com o token de acesso pessoal
-          git remote set-url origin "https://${GITHUB_ACTOR}:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY_OWNER}/App.git"
-          
-          # Push para a branch correspondente
-          git push origin "${{ github.ref }}"   
-
-      - name: Extract component version PRD
-        id: extract_component_version_prd
-        run: echo "::set-output name=component_version::$(cat component_version)"
-  
-      - name: Show component version PRD
-        run: echo "Extracted version is ${{ steps.extract_component_version_prd.outputs.component_version_prd }}"
-
-      - name: Push image to Docker Hub
-        uses: docker/build-push-action@v4
-        with:
-          context: ./Application
-          push: true
-          tags: emanuelfds/app:v${{ env.newversion }}
-    
-  
-  # trivy-scanning-docker-hub:
-  #   name: Trivy Scanner Docker Hub
-  #   needs: [deploy-prd]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Run Trivy vulnerability scanner
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         image-ref: 'emanuelfds/app:v${{ needs.deploy-prd.outputs.component_version_prd }}'    # Docker image reference
-  #         format: 'sarif'                                                                   # output format of scan results (table, json, sarif)
-  #         output: 'trivy-results-docker-hub.sarif'                                          # location where vulnerability scan results will be recorded
-  #         exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
-  #         ignore-unfixed: true                                                              # ignore unfixed vulnerabilities
-  #         vuln-type: 'os,library'                                                           # type of vulnerabilities to be displayed
-  #         severity: 'CRITICAL,HIGH,MEDIUM'                                                  # severities of vulnerabilities to be displayed
-
-  #     - name: Upload Trivy scan results to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       if: always()
-  #       with:
-  #         sarif_file: 'trivy-results-docker-hub.sarif'
-
-  #     - name: Run Trivy vulnerability scanner in IaC mode - Application
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         scan-type: 'config'
-  #         scan-ref: './Application'
-  #         hide-progress: false
-  #         format: 'sarif'
-  #         output: 'trivy-results-application.sarif'
-  #         exit-code: '0' 
-  #         ignore-unfixed: true          
-  #         severity: 'CRITICAL,HIGH,MEDIUM'
-
-  #     - name: Upload Trivy scan results to GitHub Security tab - Application
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       if: always()
-  #       with:
-  #         sarif_file: 'trivy-results-application.sarif'
-  #         category: 'TrivyScanResultsApplication'
-
-  #     - name: Run Trivy vulnerability scanner in IaC mode - Configs
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         scan-type: 'config'
-  #         scan-ref: './Configs'
-  #         hide-progress: false
-  #         format: 'sarif'
-  #         output: 'trivy-results-configs.sarif'
-  #         exit-code: '0' 
-  #         ignore-unfixed: true
-  #         severity: 'CRITICAL,HIGH,MEDIUM'
-
-  #     - name: Upload Trivy scan results to GitHub Security tab - Configs
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       if: always()
-  #       with:
-  #         sarif_file: 'trivy-results-configs.sarif'
-  #         category: 'TrivyScanResultsConfigs'
+          - 
+            name: Run Trivy vulnerability scanner
+            uses: aquasecurity/trivy-action@master
+            with:
+              image-ref: 'emanuelfds/app:v${{ github.run_number }}'
+              format: 'table'
+              exit-code: '0'    # if 'exit-code: 1' your pipeline will be interrupted
+              ignore-unfixed: true
+              vuln-type: 'os,library'
+              severity: 'CRITICAL,HIGH,MEDIUM'
 
   modifygit:
-    needs: [deploy-prd]
+    needs: docker
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
         name: changing the deployment of git repo
         with:
-          ref: 'main'
           repository: 'emanuelfds/App-Manifest'
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
       - name: modify the image
         run: |
-          git config user.email ${{ secrets.GIT_EMAIL }}
+          git config user.email ${{ vars.GIT_EMAIL }}
           git config user.name "${{ vars.GIT_USERNAME }}"
           pwd
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
           sed -i "s+emanuelfds/app.*+emanuelfds/app:v$RUN_NUMBER+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          sed -i "s+version:.*+version: ${{ needs.deploy-prd.outputs.component_version_prd }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          sed -i "s+environment:.*+environment: ${environment}+g" ${{ vars.K8S_PATH }}/deployment.yaml  # Testar
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
-          git commit -m 'Versão da Aplicação alterada para a TAG: ${{ needs.deploy-prd.outputs.component_version_prd }}'
+          git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
           git push origin main
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
