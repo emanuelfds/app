@@ -29,7 +29,7 @@ Segue uma visão geral de como será realizada a configuração:
 
 2. **GitHub Actions:** vamos configurar o GitHub Actions criando um arquivo de workflow no diretório **`.github/workflows/`** do repositório. Usaremos o workflow do GitHub para acionar uma ação para criar a imagem, enviar para o DockerHub e modificar o arquivo de manifesto do Kubernetes conforme necessário para a implantação.
 
-3. **Crie um cluster Kubernetes:** iremos configurar um cluster Kubernetes. Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.27.4+k0s.0/). 
+3. **Crie um cluster Kubernetes:** iremos configurar um cluster Kubernetes. Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.29.2+k0s.0/). 
 
 4. **Instalar o Kubectl:** 
 
@@ -46,7 +46,7 @@ Para que possamos continuar daqui para frente, precisamos ter o seguinte instala
 - Um cluster Kubernetes
 - kubectl instalado
 
-Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.27.4+k0s.0/).
+Para a orquestração do Kubernetes, será usado o [K0S](https://docs.k0sproject.io/v1.29.2+k0s.0/).
 
 ### Instalando o K0s
 
@@ -475,6 +475,10 @@ Depois de executar o comando de instalação, você pode verificar a implantaç�
 ```bash
 kubectl get pods -n argocd
 ```
+
+## Acessando o ArgoCD
+
+Existem duas maneiras para acessar o ArgoCD. Uma é por Port Forwarding e a outra é pelo [MetalLB](https://metallb.org/) mais informações de configuração pelo [Instalando MetalLB no K0S](https://github.com/emanuelfds/MetalLB)
 
 Vamos usar o Port Forwarding para acessar o painel do ArgoCD
 
