@@ -480,7 +480,7 @@ kubectl get pods -n argocd
 
 Existem duas maneiras para acessar o ArgoCD. Uma é por Port Forwarding e a outra é pelo [MetalLB](https://metallb.org/) mais informações de configuração pelo [Instalando MetalLB no K0S](https://github.com/emanuelfds/MetalLB)
 
-Vamos usar o Port Forwarding para acessar o painel do ArgoCD
+### Usando o Port Forwarding para acessar o painel do ArgoCD
 
 ```bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -491,6 +491,27 @@ Acesse o painel ArgoCD de sua máquina local usando o seguinte endereço
 ```bash
 http://127.0.0.1:8080
 ```
+
+### Usando o MetalLB para acessar o painel do ArgoCD
+
+```bash
+k patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+Verificando o IP do LoadBalancer
+
+```bash
+k get service argocd-server -n argocd
+```
+
+A saída desse comando será algo parecido como:
+
+```bash
+NAME            TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
+argocd-server   LoadBalancer   10.105.190.145   192.168.1.110   80:31682/TCP,443:30501/TCP   59s
+```
+
+### Obtendo a senha para acesso ao ArgoCD
 
 Para obter a senha, você pode executar o comando abaixo em seu cluster Kubernetes. O nome de usuário padrão do ArgoCD é **`admin`**
 
