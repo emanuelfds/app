@@ -1,0 +1,12 @@
+{
+    "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+    "release-type": "simple",
+    "pull-request-header": "🤖 I have created a release",
+    "pull-request-title-pattern": "build${scope}: release${component} ${version}",
+    "extra-files": [
+      "README.md"
+    ],
+    "packages": {
+      ".": {}
+    }
+  }

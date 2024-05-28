@@ -1,0 +1,21 @@
+https://dev.to/natilou/automating-tag-creation-release-and-docker-image-publishing-with-github-actions-49jg
+https://www.linkedin.com/pulse/automatically-generate-push-git-tags-github-actions-guide-shady-nagy/
+https://medium.com/@AranT/auto-tagging-and-using-semantic-versioning-with-github-actions-e40188d12cf4
+https://medium.com/one-weekend-at-a-time/semantic-commit-messages-and-automatic-version-tagging-in-github-actions-184a82a7a827
+https://stackoverflow.com/questions/70727467/github-actions-for-automatic-tag-not-working
+https://shadynagy.com/automatically-generate-push-git-tags-github-actions/
+https://github.com/marketplace/actions/automate-pull-request-generation-and-tagging-for-releases-using-tagpr
+https://carlosbecker.com/posts/goreleaser-create-tag-action/
+https://www.thisdot.co/blog/tag-and-release-your-project-with-github-actions-workflows
+https://dev.to/trydaily/automate-repository-tagging-with-github-actions-2nhc
+https://www.reddit.com/r/github/comments/13h921e/a_github_action_to_generate_tags_used_for_releases/
+https://www.howtogeek.com/devops/how-to-automatically-publish-github-releases-from-git-tags/
+
+
+Camera Baba Eletronica Tarktark Bm813 Zoom Digital 3x 2023
+https://docs.github.com/pt/packages/working-with-a-github-packages-registry/working-with-the-container-registry
+https://stackoverflow.com/questions/72959144/k8s-to-pull-private-image-from-github-container-registry-ghcr-using-github-tok
+https://dev.to/asizikov/using-github-container-registry-with-kubernetes-38fb
+https://engr-syedusmanahmad.medium.com/how-to-use-kubernetes-secret-to-pull-private-docker-images-from-dockerhub-a33609e30833
+https://github.com/actions/actions-runner-controller/discussions/2911
+
