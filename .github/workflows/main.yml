@@ -1,14 +1,18 @@
-name: Python application
+name: Build Python application
 
 on:
   push:
     branches: [ "main" ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 permissions: write-all
 
 jobs:
   trivy-scanning:
-    name: trivy-sec-scan
+    name: Trivy Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -29,7 +33,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  build:
+  dependencies:
     name: Install Dependencies
     needs: [trivy-scanning]
     runs-on: ubuntu-latest
@@ -56,9 +60,9 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  docker:
+  build-and-push-image:
     name: Build and Push Docker Image to Docher Hub
-    needs: [build]
+    needs: [dependencies]
     runs-on: ubuntu-latest
     steps:
 
@@ -70,109 +74,28 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      
+      - name: Log in to the Github Container registry
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v4
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GIT_PAT }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+  
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
         with:
           context: ./Application
           push: true
-          tags: emanuelfds/app:v${{ github.run_number }}
-
-  trivy-scanning-docker-hub:
-    name: Trivy Scanner Docker Hub
-    needs: [docker]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'emanuelfds/app:v${{ github.run_number }}'                             # Docker image reference
-          format: 'sarif'                                                                   # output format of scan results (table, json, sarif)
-          output: 'trivy-results-docker-hub.sarif'                                          # location where vulnerability scan results will be recorded
-          exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
-          ignore-unfixed: true                                                              # ignore unfixed vulnerabilities
-          vuln-type: 'os,library'                                                           # type of vulnerabilities to be displayed
-          severity: 'CRITICAL,HIGH,MEDIUM'                                                  # severities of vulnerabilities to be displayed
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results-docker-hub.sarif'
-
-      - name: Run Trivy vulnerability scanner in IaC mode - Application
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'config'
-          scan-ref: './Application'
-          hide-progress: false
-          format: 'sarif'
-          output: 'trivy-results-application.sarif'
-          exit-code: '0' 
-          ignore-unfixed: true          
-          severity: 'CRITICAL,HIGH,MEDIUM'
-
-      - name: Upload Trivy scan results to GitHub Security tab - Application
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results-application.sarif'
-          category: 'TrivyScanResultsApplication'
-
-      - name: Run Trivy vulnerability scanner in IaC mode - Configs
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'config'
-          scan-ref: './Configs'
-          hide-progress: false
-          format: 'sarif'
-          output: 'trivy-results-configs.sarif'
-          exit-code: '0' 
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH,MEDIUM'
-
-      - name: Upload Trivy scan results to GitHub Security tab - Configs
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results-configs.sarif'
-          category: 'TrivyScanResultsConfigs'
-
-  modifygit:
-    name: Deploy Application in ArgoCD
-    needs: [trivy-scanning-docker-hub]
-    runs-on: ubuntu-latest
-    environment: 
-      name: prd
-    steps:
-
-      - name: Changing the deployment of git repo
-        uses: actions/checkout@v4        
-        with:
-          ref: 'main'
-          repository: 'emanuelfds/App-Manifest'
-          token: ${{ secrets.GIT_PAT }}
-          persist-credentials: true
-
-      - name: Modifying Tag Image in Deployment
-        run: |
-          git config user.email ${{ secrets.GIT_EMAIL }}
-          git config user.name "${{ vars.GIT_USERNAME }}"
-          pwd
-          cat ${{ vars.K8S_PATH }}/deployment.yaml
-          pwd
-          sed -i "s+emanuelfds/app.*+emanuelfds/app:v${{ github.run_number }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          sed -i "s+version:.*+version:v${{ github.run_number }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          cat ${{ vars.K8S_PATH }}/deployment.yaml
-          git add .
-          git commit -m 'Versão da Aplicação alterada para a TAG: ${{ github.run_number }}'
-          git push origin main
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline

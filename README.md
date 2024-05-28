@@ -464,54 +464,163 @@ A saída de ambos os comandos será algo parecido com isso:
 namespace/argocd created
 ```
 
-Agora vamos instalar o ArgoCD como um operador no Kubernetes:
+Antes de instalar o ArgoCD, iremos instalar o [MetalLB](https://metallb.org/) para que seja possível acessar por ip da nossa rede sem a necessidade de expor alguma porta.
+
+Para instalar o MetalLB, aplique o manifesto:
 
 ```bash
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.3/config/manifests/metallb-native.yaml
 ```
 
-Depois de executar o comando de instalação, você pode verificar a implantação verificando o status dos pods ArgoCD:
+Isso implantará o MetalLB em seu cluster, no namespace **`metallb-system`**. Os componentes do manifesto são:
+
+- O Deployment **`metallb-system/controller`**. Este é o controlador de todo o cluster que lida com atribuições de endereços IP.
+- O Daemonset **`metallb-system/speaker`**. Este é o componente que fala o(s) protocolo(s) de sua escolha para tornar os serviços acessíveis.
+- Contas de serviço para o ***controller*** e ***speaker***, juntamente com as permissões RBAC que os componentes precisam para funcionar.
+
+Para mais informações de configuração pelo [Instalando MetalLB no K0S](https://github.com/emanuelfds/MetalLB)
+
+Vamos definir os IPs a serem atribuídos aos serviços do LoadBalancer.
 
 ```bash
-kubectl get pods -n argocd
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: production
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.1.100-192.168.1.120   # Range disponível da sua rede
+  autoAssign: true
 ```
 
-## Acessando o ArgoCD
-
-Existem duas maneiras para acessar o ArgoCD. Uma é por Port Forwarding e a outra é pelo [MetalLB](https://metallb.org/) mais informações de configuração pelo [Instalando MetalLB no K0S](https://github.com/emanuelfds/MetalLB)
-
-### Usando o Port Forwarding para acessar o painel do ArgoCD
+Vamos verificar se o manifesto acima foi criado:
 
 ```bash
-kubectl port-forward svc/argocd-server -n argocd 8080:443
+k get ipaddresspools.metallb.io -n metallb-system
 ```
 
-Acesse o painel ArgoCD de sua máquina local usando o seguinte endereço
+A saída do comando será algo parecido com isso:
 
 ```bash
-http://127.0.0.1:8080
+NAME         AUTO ASSIGN   AVOID BUGGY IPS   ADDRESSES
+production   true          false             ["192.168.1.100-192.168.1.120"]
 ```
 
-### Usando o MetalLB para acessar o painel do ArgoCD
+Vamos utilizar a configuração de Layer 2 onde uma instância L2Advertisement deve estar associada ao IPAddressPool.
 
 ```bash
-k patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: production
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - production
+  interfaces:
+  - wlp3s0
 ```
 
-Verificando o IP do LoadBalancer
+Vamos verificar se o manifesto acima foi criado:
+
+```bash
+k get l2advertisements.metallb.io -n metallb-system
+```
+
+A saída do comando será algo parecido com isso:
+
+```bash
+NAME         IPADDRESSPOOLS   IPADDRESSPOOL SELECTORS   INTERFACES
+production   ["production"]                             ["wlp3s0"]
+```
+Esses manifestos trabalham em conjunto para configurar o MetalLB alocando endereços IP da faixa especificada no ``IPAddressPool`` e anunciar esses IPs na interface de rede especificada no ``L2Advertisement``. Isso permite que serviços no cluster Kubernetes tenham acesso a esses IPs externos para exposição de serviço, neste caso, do ArgoCD.
+
+Agora podemos seguir com a instalação do ArgoCD.
+
+Para instalar o ArgoCD como um operador no Kubernetes iremos fazer o download o arquivo de manifesto de instalação.
+
+```bash
+wget https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Vamos editar o arquivo **install.yaml** na seção ``service`` onde é especificado as portas 80 e 443. Adicionaremos o ``annotations`` informando qual ip da nossa rede o serviço do ArgoCD será acessado e vamos substituir o ``type`` para **LoadBalancer**.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 192.168.1.101
+    metallb.universe.tf/address-pool: production
+  labels:
+    app.kubernetes.io/component: server
+    app.kubernetes.io/name: argocd-server
+    app.kubernetes.io/part-of: argocd   
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  - name: https
+    port: 443
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: argocd-server
+  type: LoadBalancer
+```
+
+Depois, vamos aplicar o arquivo **install.yaml**.
+
+```bash
+k apply -f install.yaml
+```
+
+Vamos verificar se o serviço recebeu as informações que definimos no arquivo de instalação:
 
 ```bash
 k get service argocd-server -n argocd
 ```
 
-A saída desse comando será algo parecido como:
+A saída desse comando será algo parecido com isso:
 
 ```bash
-NAME            TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
-argocd-server   LoadBalancer   10.105.190.145   192.168.1.110   80:31682/TCP,443:30501/TCP   59s
+NAME            TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+argocd-server   LoadBalancer   10.100.19.17   192.168.1.101   80:31165/TCP,443:31502/TCP   25s
 ```
 
-### Obtendo a senha para acesso ao ArgoCD
+Agora podemos verificar a implantação verificando o status dos pods ArgoCD:
+
+```bash
+k get pods -n argocd
+```
+
+A saída desse comando será algo parecido com isso:
+
+```bash
+NAME                                                READY   STATUS    RESTARTS   AGE
+argocd-applicationset-controller-75b78554fd-z4297   1/1     Running   0          40s
+argocd-notifications-controller-5b8dbb7c86-cch4q    1/1     Running   0          40s
+argocd-redis-66d9777b78-qrlff                       1/1     Running   0          40s
+argocd-server-5c797497fb-864cs                      1/1     Running   0          40s
+argocd-dex-server-869fff9967-v6747                  1/1     Running   0          40s
+argocd-repo-server-7b8d97c767-pr2b7                 1/1     Running   0          40s
+argocd-application-controller-0                     1/1     Running   0          40s
+```
+
+Pronto! O ArgoCD foi instalado corretamente e o seu acesso será realizado pelo ip que fornecemos no arquivo de instalação.
+
+
+## Acessando o ArgoCD
+
+Acesse o painel ArgoCD usando o seguinte o endereço:
+
+```bash
+https://192.168.1.101
+```
 
 Para obter a senha, você pode executar o comando abaixo em seu cluster Kubernetes. O nome de usuário padrão do ArgoCD é **`admin`**
 
