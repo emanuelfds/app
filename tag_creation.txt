@@ -12,10 +12,9 @@ https://www.reddit.com/r/github/comments/13h921e/a_github_action_to_generate_tag
 https://www.howtogeek.com/devops/how-to-automatically-publish-github-releases-from-git-tags/
 
 
-Camera Baba Eletronica Tarktark Bm813 Zoom Digital 3x 2023
+
 https://docs.github.com/pt/packages/working-with-a-github-packages-registry/working-with-the-container-registry
 https://stackoverflow.com/questions/72959144/k8s-to-pull-private-image-from-github-container-registry-ghcr-using-github-tok
 https://dev.to/asizikov/using-github-container-registry-with-kubernetes-38fb
 https://engr-syedusmanahmad.medium.com/how-to-use-kubernetes-secret-to-pull-private-docker-images-from-dockerhub-a33609e30833
 https://github.com/actions/actions-runner-controller/discussions/2911
-
