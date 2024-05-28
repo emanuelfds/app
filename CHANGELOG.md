@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/emanuelfds/App/compare/v1.1.0...v1.1.1) (2024-05-28)
+
+
+### Bug Fixes
+
+* ajustando o deploy.yaml ([8568731](https://github.com/emanuelfds/App/commit/8568731ed1a4abe83bb09f0a55b469e7ec4a1693))
+
 ## [1.1.0](https://github.com/emanuelfds/App/compare/v1.0.0...v1.1.0) (2024-05-28)
 
 
