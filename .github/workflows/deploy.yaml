@@ -16,6 +16,9 @@ jobs:
       contents: read
       packages: write
 
+    outputs:
+      docker_version: ${{ steps.meta.outputs.version }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -47,3 +50,20 @@ jobs:
 
       - name: Display Docker Metadata Output Version
         run: echo "VERSION=${{ steps.meta.outputs.version }}"
+
+  modifygit:
+    name: Deploy Application in ArgoCD
+    needs: [build-and-push-image]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Changing the deployment of git repo
+        uses: actions/checkout@v4        
+        with:
+          ref: 'main'
+          repository: 'emanuelfds/App-Manifest'
+          token: ${{ secrets.GIT_PAT }}
+          persist-credentials: true
+
+      - name: Display Docker Metadata Output Version from build-and-push-image
+        run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
