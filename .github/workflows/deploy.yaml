@@ -67,3 +67,17 @@ jobs:
 
       - name: Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
+
+      - name: Modifying Tag Image in Deployment
+        run: |
+          git config user.email ${{ secrets.GIT_EMAIL }}
+          git config user.name "${{ vars.GIT_USERNAME }}"
+          pwd
+          cat ${{ vars.K8S_PATH }}/deployment.yaml
+          pwd
+          sed -i "s+emanuelfds/app.*+emanuelfds/app:v${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          sed -i "s+version:.*+version:v${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          cat ${{ vars.K8S_PATH }}/deployment.yaml
+          git add .
+          git commit -m 'Versão da Aplicação alterada: v${{ needs.build-and-push-image.outputs.docker_version }}'
+          git push origin main
