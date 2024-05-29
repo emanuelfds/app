@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/emanuelfds/App/compare/v1.1.3...v1.1.4) (2024-05-29)
+
+
+### Bug Fixes
+
+* Exibindo o nome da version no output do job modifygit ([3ddef58](https://github.com/emanuelfds/App/commit/3ddef580fd4635253e42f748957bbe132361206b))
+
 ## [1.1.3](https://github.com/emanuelfds/App/compare/v1.1.2...v1.1.3) (2024-05-29)
 
 
