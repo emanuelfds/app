@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/emanuelfds/App/compare/v1.1.2...v1.1.3) (2024-05-29)
+
+
+### Bug Fixes
+
+* add no Dockerfile para fazer o upgrade do pip ([dc0082b](https://github.com/emanuelfds/App/commit/dc0082bbebb922c5c3c46f6ba05bd96700d2c98c))
+* Exibindo o nome da version no output ([00ac40d](https://github.com/emanuelfds/App/commit/00ac40db493311d25ebdb8f60268d4cc74a262de))
+* Exibindo o nome da version no output ([d385f5f](https://github.com/emanuelfds/App/commit/d385f5f6ecc9f2db4504a35d5f52140b1d63e6e6))
+
 ## [1.1.2](https://github.com/emanuelfds/App/compare/v1.1.1...v1.1.2) (2024-05-29)
 
 
