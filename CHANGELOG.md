@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.7](https://github.com/emanuelfds/App/compare/v1.1.6...v1.1.7) (2024-05-29)
+
+
+### Bug Fixes
+
+* ajustando o comando sed para modificar a imagem no repo app-manifest ([a055180](https://github.com/emanuelfds/App/commit/a055180072ff35f4176b8fddc524aa3e1a73843b))
+
 ## [1.1.6](https://github.com/emanuelfds/App/compare/v1.1.5...v1.1.6) (2024-05-29)
 
 
