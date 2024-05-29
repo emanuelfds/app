@@ -75,9 +75,12 @@ jobs:
           pwd
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           pwd
-          sed -i "s+emanuelfds/app.*+emanuelfds/app:v${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          sed -i "s+version:.*+version:v${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          sed -i "s+ghcr.io/emanuelfds/app.*+ghcr.io/emanuelfds/app:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+          # sed -i "s+version:.*+version:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
+
+          sed -i 's/\(version: "\)[^"]*\(".*\)/\1${{ needs.build-and-push-image.outputs.docker_version }}\2/' ${{ vars.K8S_PATH }}/deployment.yaml
+
           cat ${{ vars.K8S_PATH }}/deployment.yaml
           git add .
-          git commit -m 'Versão da Aplicação alterada: v${{ needs.build-and-push-image.outputs.docker_version }}'
+          git commit -m 'Nova versão da Aplicação: ${{ needs.build-and-push-image.outputs.docker_version }}'
           git push origin main
