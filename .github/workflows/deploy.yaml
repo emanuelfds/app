@@ -46,4 +46,4 @@ jobs:
           cache-to: type=inline
 
       - name: Display Docker Metadata Output Version
-      run: echo "VERSION=${{ steps.meta.outputs.version }}"
+        run: echo "VERSION=${{ steps.meta.outputs.version }}"
