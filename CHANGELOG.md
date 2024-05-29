@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/emanuelfds/App/compare/v1.1.4...v1.1.5) (2024-05-29)
+
+
+### Bug Fixes
+
+* modificando o repo app-manifest ([290a0d1](https://github.com/emanuelfds/App/commit/290a0d1383167fa100f8551200d4e516248a19ff))
+
 ## [1.1.4](https://github.com/emanuelfds/App/compare/v1.1.3...v1.1.4) (2024-05-29)
 
 
