@@ -5,6 +5,9 @@ FROM python:3.10-alpine
 # or RUN instructions that follow it in the Dockerfile
 WORKDIR /app
 
+# Upgrade pip to the latest version
+RUN pip install --no-cache-dir --upgrade pip
+
 # Copy files or folders from source to the dest path in the image's filesystem.
 COPY requirements.txt .
 
