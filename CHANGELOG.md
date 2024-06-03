@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.9](https://github.com/emanuelfds/App/compare/v1.1.8...v1.1.9) (2024-06-03)
+
+
+### Bug Fixes
+
+* Add permissions no job trivy-scanning ([c50422b](https://github.com/emanuelfds/App/commit/c50422b20d2c699548b6daa38e7e47e950cea354))
+* Add permissions no job trivy-scanning ([1b579ec](https://github.com/emanuelfds/App/commit/1b579ec57b4086ce83a5a071097acfefec44d4ad))
+* Add permissions no job trivy-scanning ([867e4bd](https://github.com/emanuelfds/App/commit/867e4bd5839804302d66f405419a2642bb64710e))
+
 ## [1.1.8](https://github.com/emanuelfds/App/compare/v1.1.7...v1.1.8) (2024-06-03)
 
 
