@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.8](https://github.com/emanuelfds/App/compare/v1.1.7...v1.1.8) (2024-06-03)
+
+
+### Bug Fixes
+
+* add o Trivt Scan ([c1be0c8](https://github.com/emanuelfds/App/commit/c1be0c8f8d05ac179e1c37834421b4dd74149016))
+
 ## [1.1.7](https://github.com/emanuelfds/App/compare/v1.1.6...v1.1.7) (2024-05-29)
 
 
