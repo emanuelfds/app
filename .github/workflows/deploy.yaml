@@ -143,7 +143,7 @@ jobs:
 
   modifygit:
     name: Deploy Application in ArgoCD
-    needs: [build-and-push-image]
+    needs: [trivy-scanning-docker-hub]
     runs-on: ubuntu-latest
     
     steps:
