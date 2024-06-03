@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.18](https://github.com/emanuelfds/App/compare/v1.1.17...v1.1.18) (2024-06-03)
+
+
+### Bug Fixes
+
+* ajustando a image-ref ([ec1c65d](https://github.com/emanuelfds/App/commit/ec1c65d2490e11f9a7e0717e91c7cc56570c3e8a))
+
 ## [1.1.17](https://github.com/emanuelfds/App/compare/v1.1.16...v1.1.17) (2024-06-03)
 
 
