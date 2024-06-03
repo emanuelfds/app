@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.15](https://github.com/emanuelfds/App/compare/v1.1.14...v1.1.15) (2024-06-03)
+
+
+### Bug Fixes
+
+* ajustando o needs do modigygit ([dd527a2](https://github.com/emanuelfds/App/commit/dd527a2b3b74e030de0d2f32222fec140cb176b6))
+
 ## [1.1.14](https://github.com/emanuelfds/App/compare/v1.1.13...v1.1.14) (2024-06-03)
 
 
