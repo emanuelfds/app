@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.12](https://github.com/emanuelfds/App/compare/v1.1.11...v1.1.12) (2024-06-03)
+
+
+### Bug Fixes
+
+* Add permissions no job trivy-scanning ([e2c6348](https://github.com/emanuelfds/App/commit/e2c63480c50a3dba06676c2de62e7ba981223e2a))
+* ajustando o needs do job modigygit ([ad58ac0](https://github.com/emanuelfds/App/commit/ad58ac03febba92d1db5b6dd7351a335121d034e))
+
 ## [1.1.11](https://github.com/emanuelfds/App/compare/v1.1.10...v1.1.11) (2024-06-03)
 
 
