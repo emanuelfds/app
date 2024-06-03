@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.13](https://github.com/emanuelfds/App/compare/v1.1.12...v1.1.13) (2024-06-03)
+
+
+### Bug Fixes
+
+* removendo arquivo tag_creation.txt ([30696c8](https://github.com/emanuelfds/App/commit/30696c852a3136dd0486c81d4e9fa00b5a4090b8))
+
 ## [1.1.12](https://github.com/emanuelfds/App/compare/v1.1.11...v1.1.12) (2024-06-03)
 
 
