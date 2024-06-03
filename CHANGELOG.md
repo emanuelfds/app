@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.14](https://github.com/emanuelfds/App/compare/v1.1.13...v1.1.14) (2024-06-03)
+
+
+### Bug Fixes
+
+* add login-action na job trivy scanning ghcr ([a6e71ef](https://github.com/emanuelfds/App/commit/a6e71ef6090e56ff0716bba380868b46cd566009))
+
 ## [1.1.13](https://github.com/emanuelfds/App/compare/v1.1.12...v1.1.13) (2024-06-03)
 
 
