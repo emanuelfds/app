@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.11](https://github.com/emanuelfds/App/compare/v1.1.10...v1.1.11) (2024-06-03)
+
+
+### Bug Fixes
+
+* add o gitignore ([b1784bd](https://github.com/emanuelfds/App/commit/b1784bd492a0ecee3d8ef97bcc8316e2dd945ba3))
+* add o Trivt Scan no GHCR ([75cfc94](https://github.com/emanuelfds/App/commit/75cfc9441a382f74f57dc900e9038278d9695e5b))
+* add o Trivt Scan no GHCR ([8975ce5](https://github.com/emanuelfds/App/commit/8975ce56c4bc741022e9727bc7bc09f2f989d0b8))
+
 ## [1.1.10](https://github.com/emanuelfds/App/compare/v1.1.9...v1.1.10) (2024-06-03)
 
 
