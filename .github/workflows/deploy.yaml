@@ -10,7 +10,31 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  trivy-scanning:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
+    
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
   build-and-push-image:
+    name: Build and Push Docker Image to Github Container Registry
+    needs: [trivy-scanning]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -73,15 +97,11 @@ jobs:
           git config user.email ${{ secrets.GIT_EMAIL }}
           git config user.name "${{ vars.GIT_USERNAME }}"
           pwd
-          cat ${{ vars.K8S_PATH }}/deployment.yaml
+          cat ${{ vars.K8S_PATH }}/04-deployment.yaml
           pwd
-          sed -i "s+ghcr.io/emanuelfds/app.*+ghcr.io/emanuelfds/app:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-          # sed -i "s+version:.*+version:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/deployment.yaml
-
-          sed -i 's/\(version: "\)[^"]*\(".*\)/\1${{ needs.build-and-push-image.outputs.docker_version }}\2/' ${{ vars.K8S_PATH }}/deployment.yaml
-
-          cat ${{ vars.K8S_PATH }}/deployment.yaml
+          sed -i "s+ghcr.io/emanuelfds/app.*+ghcr.io/emanuelfds/app:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/04-deployment.yaml
+          sed -i 's/\(version: "\)[^"]*\(".*\)/\1${{ needs.build-and-push-image.outputs.docker_version }}\2/' ${{ vars.K8S_PATH }}/04-deployment.yaml
+          cat ${{ vars.K8S_PATH }}/04-deployment.yaml
           git add .
           git commit -m 'Nova versão da Aplicação: ${{ needs.build-and-push-image.outputs.docker_version }}'
           git push origin main
-          
