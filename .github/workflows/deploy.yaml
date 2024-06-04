@@ -169,7 +169,6 @@ jobs:
 
       - name: Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
-        ${{needs.buil}}
 
       - name: Modifying Tag Image in Deployment
         run: |
