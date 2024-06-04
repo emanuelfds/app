@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.25](https://github.com/emanuelfds/App/compare/v1.1.24...v1.1.25) (2024-06-04)
+
+
+### Bug Fixes
+
+* ajustando a tag da imagem ([18e0504](https://github.com/emanuelfds/App/commit/18e05045e2840c9f540e97a546026393554838bf))
+
 ## [1.1.24](https://github.com/emanuelfds/App/compare/v1.1.23...v1.1.24) (2024-06-04)
 
 
