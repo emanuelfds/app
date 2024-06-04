@@ -12,94 +12,94 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # trivy-scanning:
-  #   name: Trivy Scan
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     security-events: write
+  trivy-scanning:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  #     - name: Run Trivy vulnerability scanner in repo mode
-  #       uses: aquasecurity/trivy-action@master
-  #       with:
-  #         scan-type: 'fs'
-  #         ignore-unfixed: true
-  #         format: 'sarif'
-  #         output: 'trivy-results.sarif'
-  #         severity: 'HIGH,CRITICAL'
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
     
-  #     - name: Upload Trivy scan results to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v3
-  #       if: always()
-  #       with:
-  #         sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
-  # build-and-push-image:
-  #   name: Build and Push Docker Image to Github Container Registry
-    # needs: [trivy-scanning]
-    # runs-on: ubuntu-latest
+  build-and-push-image:
+    name: Build and Push Docker Image to Github Container Registry
+    needs: [trivy-scanning]
+    runs-on: ubuntu-latest
     # permissions:
     #   contents: read
     #   packages: write
 
-    # outputs:
-    #   docker_version: ${{ steps.meta.outputs.version }}
+    outputs:
+      docker_version: ${{ steps.meta.outputs.version }}
 
-    # steps:
-    #   - name: Checkout Repository
-    #     uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    #   - name: Log in to the Container registry
-    #     uses: docker/login-action@v3
-    #     with:
-    #       registry: ${{ env.REGISTRY }}
-    #       username: ${{ github.actor }}
-    #       password: ${{ secrets.GIT_PAT }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GIT_PAT }}
 
-    #   - name: Extract metadata (tags, labels) for Docker
-    #     id: meta
-    #     uses: docker/metadata-action@v5
-    #     with:
-    #       images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-    #       tags: |
-    #         type=semver,pattern={{version}}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
 
-    #   - name: Build and Push Docker image
-    #     uses: docker/build-push-action@v5
-    #     with:
-    #       context: ./Application
-    #       push: true
-    #       tags: ${{ steps.meta.outputs.tags }}
-    #       labels: ${{ steps.meta.outputs.labels }}
-    #       cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-    #       cache-to: type=inline
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Application
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-to: type=inline
 
     #   - name: Display Docker Metadata Output Version
     #     run: echo "VERSION=${{ steps.meta.outputs.version }}"
 
-      # - name: Run Trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@master
-      #   with:
-      #     image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'                             # Docker image reference
-      #     format: 'sarif'                                                                   # output format of scan results (table, json, sarif)
-      #     output: 'trivy-results-ghcr.sarif'                                          # location where vulnerability scan results will be recorded
-      #     exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
-      #     ignore-unfixed: true                                                              # ignore unfixed vulnerabilities
-      #     vuln-type: 'os,library'                                                           # type of vulnerabilities to be displayed
-      #     severity: 'CRITICAL,HIGH,MEDIUM'
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'                             # Docker image reference
+          format: 'sarif'                                                                   # output format of scan results (table, json, sarif)
+          output: 'trivy-results-ghcr.sarif'                                          # location where vulnerability scan results will be recorded
+          exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
+          ignore-unfixed: true                                                              # ignore unfixed vulnerabilities
+          vuln-type: 'os,library'                                                           # type of vulnerabilities to be displayed
+          severity: 'CRITICAL,HIGH,MEDIUM'
       
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   if: always()
-      #   with:
-      #     sarif_file: 'trivy-results-ghcr.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-ghcr.sarif'
 
   trivy-scanning-ghcr:
     name: Trivy Scanner Github Container Registry
-    # needs: [build-and-push-image]
+    needs: [build-and-push-image]
     runs-on: ubuntu-latest
     permissions:
       security-events: write
