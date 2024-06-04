@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.40](https://github.com/emanuelfds/app/compare/v1.1.39...v1.1.40) (2024-06-04)
+
+
+### Bug Fixes
+
+* rodando todo o pipe ([831a8c3](https://github.com/emanuelfds/app/commit/831a8c3ebdbb57960e4bffd51d11a4b9105ed016))
+* rodando todo o pipe ([d8712fa](https://github.com/emanuelfds/app/commit/d8712fa0e6d0967a84faa83716a784adc4d5b4c8))
+
 ## [1.1.39](https://github.com/emanuelfds/app/compare/v1.1.38...v1.1.39) (2024-06-04)
 
 
