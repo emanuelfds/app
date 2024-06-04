@@ -171,7 +171,7 @@ jobs:
           pwd
           cat ${{ vars.K8S_PATH }}/04-deployment.yaml
           pwd
-          sed -i "s+ghcr.io/emanuelfds/app.*+ghcr.io/emanuelfds/app:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/04-deployment.yaml
+          sed -i "s+${{ env.REGISTRY }}/emanuelfds/app.*+${{ env.REGISTRY }}/emanuelfds/app:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/04-deployment.yaml
           sed -i 's/\(version: "\)[^"]*\(".*\)/\1${{ needs.build-and-push-image.outputs.docker_version }}\2/' ${{ vars.K8S_PATH }}/04-deployment.yaml
           cat ${{ vars.K8S_PATH }}/04-deployment.yaml
           git add .
