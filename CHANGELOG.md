@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.37](https://github.com/emanuelfds/app/compare/v1.1.36...v1.1.37) (2024-06-04)
+
+
+### Bug Fixes
+
+* rodando todo o pip ([e375a06](https://github.com/emanuelfds/app/commit/e375a06c4f35c07a906f42259b34c9fc1167059f))
+
 ## [1.1.36](https://github.com/emanuelfds/app/compare/v1.1.35...v1.1.36) (2024-06-04)
 
 
