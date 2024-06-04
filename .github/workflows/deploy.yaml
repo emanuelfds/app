@@ -5,6 +5,8 @@ on:
     tags:
       - 'v*'
 
+permissions: write-all
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -39,9 +41,9 @@ jobs:
     name: Build and Push Docker Image to Github Container Registry
     # needs: [trivy-scanning]
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    # permissions:
+    #   contents: read
+    #   packages: write
 
     outputs:
       docker_version: ${{ steps.meta.outputs.version }}
