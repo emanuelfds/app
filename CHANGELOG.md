@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.23](https://github.com/emanuelfds/App/compare/v1.1.22...v1.1.23) (2024-06-04)
+
+
+### Bug Fixes
+
+* ajustando o nome da imagem ([4dbd64d](https://github.com/emanuelfds/App/commit/4dbd64dd1f598480fdf225ed83a7e63744a8b0b2))
+
 ## [1.1.22](https://github.com/emanuelfds/App/compare/v1.1.21...v1.1.22) (2024-06-04)
 
 
