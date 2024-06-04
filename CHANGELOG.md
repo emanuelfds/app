@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.35](https://github.com/emanuelfds/app/compare/v1.1.34...v1.1.35) (2024-06-04)
+
+
+### Bug Fixes
+
+* testando o trivy ([8c4339f](https://github.com/emanuelfds/app/commit/8c4339fd827b5deb797405fcc65f588fc30e24ed))
+
 ## [1.1.34](https://github.com/emanuelfds/app/compare/v1.1.33...v1.1.34) (2024-06-04)
 
 
