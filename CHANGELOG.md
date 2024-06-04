@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.32](https://github.com/emanuelfds/app/compare/v1.1.31...v1.1.32) (2024-06-04)
+
+
+### Bug Fixes
+
+* add permission ([04f683c](https://github.com/emanuelfds/app/commit/04f683c259495d219dc7d840faeda5b7f97bbefa))
+
 ## [1.1.31](https://github.com/emanuelfds/app/compare/v1.1.30...v1.1.31) (2024-06-04)
 
 
