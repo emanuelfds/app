@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.31](https://github.com/emanuelfds/app/compare/v1.1.30...v1.1.31) (2024-06-04)
+
+
+### Bug Fixes
+
+* add upload to security tab ([f2d3202](https://github.com/emanuelfds/app/commit/f2d3202d3f0d23dc95e4bae8932eebf5a54b1da9))
+
 ## [1.1.30](https://github.com/emanuelfds/App/compare/v1.1.29...v1.1.30) (2024-06-04)
 
 
