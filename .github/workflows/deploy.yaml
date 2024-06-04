@@ -41,6 +41,9 @@ jobs:
     name: Build and Push Docker Image to Github Container Registry
     needs: [trivy-scanning]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     outputs:
       docker_version: ${{ steps.meta.outputs.version }}
@@ -166,6 +169,7 @@ jobs:
 
       - name: Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
+        ${{needs.buil}}
 
       - name: Modifying Tag Image in Deployment
         run: |
