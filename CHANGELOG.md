@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.19](https://github.com/emanuelfds/App/compare/v1.1.18...v1.1.19) (2024-06-04)
+
+
+### Bug Fixes
+
+* add task de pull da imagem no ghcr ([8c46dfb](https://github.com/emanuelfds/App/commit/8c46dfbd28fdf119ccbf484f6c23d9fbfabb57fe))
+
 ## [1.1.18](https://github.com/emanuelfds/App/compare/v1.1.17...v1.1.18) (2024-06-03)
 
 
