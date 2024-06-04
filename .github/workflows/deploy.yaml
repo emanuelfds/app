@@ -81,7 +81,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'                             # Docker image reference
+          image-ref: '${{ env.REGISTRY }}/emanuelfds/app:latest'                             # Docker image reference
           format: 'table'                                                                   # output format of scan results (table, json, sarif)
           output: 'trivy-results-ghcr.sarif'                                          # location where vulnerability scan results will be recorded
           exit-code: '0'                                                                    # if 'exit-code: 1' your pipeline will be interrupted
