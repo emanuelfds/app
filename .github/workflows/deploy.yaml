@@ -97,7 +97,7 @@ jobs:
           password: ${{ secrets.GIT_PAT }}
       
       - name: Pull container image from GHCR
-        run: docker pull ghcr.io/${{ env.IMAGE_NAME }}:latest
+        run: docker pull ghcr.io/emanuelfds/app:latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
