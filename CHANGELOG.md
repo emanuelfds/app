@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.42](https://github.com/emanuelfds/app/compare/v1.1.41...v1.1.42) (2024-06-06)
+
+
+### Bug Fixes
+
+* ajustando as variáveis no modifygit ([a9b0d23](https://github.com/emanuelfds/app/commit/a9b0d2331c288bc0e5d0bbeebed92fa33ce7b988))
+
 ## [1.1.41](https://github.com/emanuelfds/app/compare/v1.1.40...v1.1.41) (2024-06-04)
 
 
