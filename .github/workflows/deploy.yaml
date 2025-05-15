@@ -105,17 +105,17 @@ jobs:
       docker_version: ${{ steps.meta.outputs.version }}
 
     steps:
-      - name: Checkout Repository
+      - name: 🚪 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Log in to the Container registry
+      - name: 👤 Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_PAT }}
 
-      - name: Extract metadata (tags, labels) for Docker
+      - name: ⛏️ Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -123,7 +123,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
 
-      - name: Display Docker Metadata Output Version
+      - name: 👀 Display Docker Metadata Output Version
         run: echo "VERSION=${{ steps.meta.outputs.version }}"
 
       - name: 🛠️ Build and ⬆️ Push Docker image
@@ -159,7 +159,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Changing the deployment of git repo
+      - name: 🔄 Changing the deployment of git repo
         uses: actions/checkout@v4        
         with:
           ref: 'main'

@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release-please:
-    name: Create Release
+    name: 🔖 Create Release
     runs-on: ubuntu-latest
     steps:
       - name: release-please
