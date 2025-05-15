@@ -1,0 +1,6 @@
+kubernetes==32.0.1
+Flask==3.1.0
+prometheus-flask-exporter==0.23.2
+flask_prometheus_metrics==1.0.0
+psutil==7.0.0
+setuptools==70.0.0
