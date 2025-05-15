@@ -13,7 +13,7 @@ env:
 
 jobs:
   trivy-scanning:
-    name: Trivy Scan
+    name: 🔍 Trivy Scan
     runs-on: ubuntu-latest
     # permissions:
     #   security-events: write
@@ -38,7 +38,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
   
   trivy-scanning-configs:
-    name: Trivy Scanner Configs
+    name: 🔍 Trivy Scanner Configs
     needs: [trivy-scanning]
     runs-on: ubuntu-latest
     # permissions:
@@ -67,14 +67,14 @@ jobs:
           ignore-unfixed: true          
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      - name: Upload Trivy scan results to GitHub Security tab - Application
+      - name: 📤 Upload Trivy scan results to GitHub Security tab - Application
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results-application.sarif'
           category: 'TrivyScanResultsApplication'
 
-      - name: Run Trivy vulnerability scanner in IaC mode - Configs
+      - name: 🔍 Run Trivy vulnerability scanner in IaC mode - Configs
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'config'
@@ -86,7 +86,7 @@ jobs:
           ignore-unfixed: true
           severity: 'CRITICAL,HIGH,MEDIUM'
 
-      - name: Upload Trivy scan results to GitHub Security tab - Configs
+      - name: 📤 Upload Trivy scan results to GitHub Security tab - Configs
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
@@ -94,7 +94,7 @@ jobs:
           category: 'TrivyScanResultsConfigs'
 
   build-and-push-image:
-    name: Build and Push Docker Image to Github Container Registry
+    name: 🛠️ Build and ⬆️ Push Docker Image to Github Container Registry
     needs: [trivy-scanning-configs]
     runs-on: ubuntu-latest
     # permissions:
@@ -126,7 +126,7 @@ jobs:
       - name: Display Docker Metadata Output Version
         run: echo "VERSION=${{ steps.meta.outputs.version }}"
 
-      - name: Build and Push Docker image
+      - name: 🛠️ Build and ⬆️ Push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./Application
@@ -136,7 +136,7 @@ jobs:
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-to: type=inline
       
-      - name: Run Trivy vulnerability scanner
+      - name: 🔍 Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'                     # Docker image reference
@@ -147,14 +147,14 @@ jobs:
           vuln-type: 'os,library'                                                           # type of vulnerabilities to be displayed
           severity: 'CRITICAL,HIGH,MEDIUM'
       
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: 📤 Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results-ghcr.sarif'
 
   modifygit:
-    name: Deploy Application in ArgoCD
+    name: ☸️ Deploy Application in ArgoCD
     needs: [build-and-push-image]
     runs-on: ubuntu-latest
     
@@ -170,7 +170,7 @@ jobs:
       - name: Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
 
-      - name: Modifying Tag Image in Deployment
+      - name: 🏷️ Modifying Tag Image in Deployment
         run: |
           git config user.email ${{ secrets.GIT_EMAIL }}
           git config user.name "${{ vars.GIT_USERNAME }}"
