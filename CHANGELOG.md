@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/emanuelfds/app/compare/v1.2.1...v1.2.2) (2025-05-15)
+
+
+### Bug Fixes
+
+* adjust folders ([a4988c6](https://github.com/emanuelfds/app/commit/a4988c66bcf72f6902b48a8d67cb1f6c0e42ef00))
+* ajustando pastas ([55c4118](https://github.com/emanuelfds/app/commit/55c4118419ee24d5145e0f9ad1166cbaf7e1a1a6))
+
 ## [1.2.1](https://github.com/emanuelfds/app/compare/v1.2.0...v1.2.1) (2025-05-15)
 
 
