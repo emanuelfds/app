@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/emanuelfds/app/compare/v1.2.0...v1.2.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* adjust deploy.yaml ([11e34fa](https://github.com/emanuelfds/app/commit/11e34fab80affc65e8d0a3b63a2b0eefbbcf22f8))
+
 ## [1.2.0](https://github.com/emanuelfds/app/compare/v1.1.42...v1.2.0) (2025-05-15)
 
 
