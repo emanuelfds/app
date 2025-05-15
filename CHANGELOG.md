@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/emanuelfds/app/compare/v1.1.42...v1.2.0) (2025-05-15)
+
+
+### Features
+
+* Add new artefacts ([d9163bf](https://github.com/emanuelfds/app/commit/d9163bfa8e31f2ba20ef278916be454b7047c490))
+* adjust release-please ([bb8344e](https://github.com/emanuelfds/app/commit/bb8344ec00f011cdb02d612e872016399ae67e10))
+
 ## [1.1.42](https://github.com/emanuelfds/app/compare/v1.1.41...v1.1.42) (2024-06-06)
 
 
