@@ -167,7 +167,7 @@ jobs:
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
 
-      - name: Display Docker Metadata Output Version from build-and-push-image
+      - name: 👀 Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
 
       - name: 🏷️ Modifying Tag Image in Deployment
