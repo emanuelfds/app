@@ -12,7 +12,7 @@ permissions: write-all
 
 jobs:
   trivy-scanning:
-    name: Trivy Scan
+    name: 🔍 Trivy Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
