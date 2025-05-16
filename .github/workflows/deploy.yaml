@@ -123,7 +123,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
 
-      - name: 👀 Display Docker Metadata Output Version
+      - name: 👁️ Display Docker Metadata Output Version
         run: echo "VERSION=${{ steps.meta.outputs.version }}"
 
       - name: 🛠️ Build and ⬆️ Push Docker image
@@ -167,19 +167,61 @@ jobs:
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
 
-      - name: 👀 Display Docker Metadata Output Version from build-and-push-image
+      - name: 👁️ Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
 
-      - name: 🏷️ Modifying Tag Image in Deployment
+      - name: 🏷️ Atualizar tag da imagem no deployment
         run: |
-          git config user.email ${{ secrets.GIT_EMAIL }}
+          set -e
+
+          echo "🔧 Configurando Git"
+          git config user.email "${{ secrets.GIT_EMAIL }}"
           git config user.name "${{ vars.GIT_USERNAME }}"
+
+          DEPLOYMENT_FILE="${{ vars.K8S_PATH }}/06-app-deployment.yaml"
+          VERSION="${{ needs.build-and-push-image.outputs.docker_version }}"
+          REGISTRY="${{ env.REGISTRY }}"
+          IMAGE_NAME="${{ env.IMAGE_NAME }}"
+
+          if [[ -z "$DEPLOYMENT_FILE" || -z "$VERSION" || -z "$REGISTRY" || -z "$IMAGE_NAME" ]]; then
+            echo "❌ Erro: Variável obrigatória não definida."
+            echo "🔎 DEPLOYMENT_FILE: $DEPLOYMENT_FILE"
+            echo "🔎 VERSION: $VERSION"
+            echo "🔎 REGISTRY: $REGISTRY"
+            echo "🔎 IMAGE_NAME: $IMAGE_NAME"
+            exit 1
+          fi
+
+          echo "📂 Diretório atual:"
           pwd
-          cat ${{ vars.K8S_PATH }}/04-deployment.yaml
-          pwd
-          sed -i "s+${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}.*+${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push-image.outputs.docker_version }}+g" ${{ vars.K8S_PATH }}/04-deployment.yaml
-          sed -i 's/\(version: "\)[^"]*\(".*\)/\1${{ needs.build-and-push-image.outputs.docker_version }}\2/' ${{ vars.K8S_PATH }}/04-deployment.yaml
-          cat ${{ vars.K8S_PATH }}/04-deployment.yaml
-          git add .
-          git commit -m 'Nova versão da Aplicação: ${{ needs.build-and-push-image.outputs.docker_version }}'
-          git push origin main
+
+          echo "📄 Conteúdo do arquivo de deployment (antes da alteração):"
+          cat "$DEPLOYMENT_FILE"
+
+          echo "🛠️ Atualizando tag da imagem..."
+          sed -i "s+${REGISTRY}/${IMAGE_NAME}.*+${REGISTRY}/${IMAGE_NAME}:${VERSION}+g" "$DEPLOYMENT_FILE"
+
+          echo "🔄 Atualizando campo 'version'..."
+          sed -i "s/\(version: \"\)[^\"]*\(\".*\)/\1${VERSION}\2/" "$DEPLOYMENT_FILE"
+
+          echo "✅ Arquivo atualizado:"
+          cat "$DEPLOYMENT_FILE"
+
+          if git diff --quiet; then
+          echo "🆗 Nenhuma alteração detectada, pulando commit."
+          else
+            git add .
+            git commit -m "🔖 Nova versão da Aplicação: ${VERSION}"
+            git push origin main
+          fi
+
+      - name: 📢 Notificar Slack com deploy
+        uses: ./.github/actions/notificar-slack
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          version: ${{ needs.build-and-push-image.outputs.docker_version }}
+          image: ${{ env.IMAGE_NAME }}
+          repo: ${{ github.repository }}
+          sha: ${{ github.sha }}
+          ref: ${{ github.ref_name }}
+          actor: ${{ github.actor }}
