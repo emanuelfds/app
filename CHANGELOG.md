@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.5](https://github.com/emanuelfds/app/compare/v1.2.4...v1.2.5) (2025-05-16)
+
+
+### Bug Fixes
+
+* add icones na mensagem do slack ([43ab273](https://github.com/emanuelfds/app/commit/43ab27370e4d218782961adadb6e3b9d308d711f))
+
 ## [1.2.4](https://github.com/emanuelfds/app/compare/v1.2.3...v1.2.4) (2025-05-16)
 
 
