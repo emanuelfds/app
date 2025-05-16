@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/emanuelfds/app/compare/v1.2.3...v1.2.4) (2025-05-16)
+
+
+### Bug Fixes
+
+* Teste de action local ([f734a8f](https://github.com/emanuelfds/app/commit/f734a8f5c429c2087f49abb62e8e825741a881af))
+
 ## [1.2.3](https://github.com/emanuelfds/app/compare/v1.2.2...v1.2.3) (2025-05-16)
 
 
