@@ -1,0 +1,146 @@
+<!-- # 1.46 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Monitoring</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #444;
+            margin-bottom: 20px;
+        }
+        .pod-info {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .bar-container {
+            width: 100%;
+            background: #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+            height: 35px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+        }
+        .bar {
+            height: 100%;
+            text-align: right;
+            padding-right: 10px;
+            line-height: 35px;
+            color: white;
+            font-weight: bold;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        .cpu-bar { 
+            background: #28a745; 
+            transition: width 0.5s ease-in-out;
+        }
+        .mem-bar { 
+            background: #dc3545; 
+            transition: width 0.5s ease-in-out;
+        }
+        .alert {
+            padding: 15px;
+            background: #ffcc00;
+            color: black;
+            border-radius: 12px;
+            margin-top: 15px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+        .warning-icon {
+            margin-left: 10px;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>System Monitoring</h1>
+        <div class="pod-info">
+            <h2>Pod Name: {{ pod_name }}</h2>
+            <h2>Pod IP: {{ pod_ip }}</h2>
+            <h2>Namespace: {{ namespace }}</h2>
+        </div>
+        <h3>CPU Utilization</h3>
+        <div class="bar-container">
+            <div class="bar cpu-bar" style="width: 0%">
+                <!-- JS insere conteúdo -->
+            </div>
+        </div>
+        <h3>Memory Utilization</h3>
+        <div class="bar-container">
+            <div class="bar mem-bar" style="width: 0%">
+                <!-- JS insere conteúdo -->
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div id="alerts"></div>
+    </div>
+
+    <script>
+        function updateMetrics() {
+            fetch('/metrics-data')
+                .then(response => response.json())
+                .then(data => {
+                    const cpu = data.cpu;
+                    const memory = data.memory;
+                    const cpuWarn = data.cpu_warning;
+                    const memWarn = data.mem_warning;
+    
+                    const cpuBar = document.querySelector('.cpu-bar');
+                    const memBar = document.querySelector('.mem-bar');
+    
+                    cpuBar.style.width = cpu + '%';
+                    cpuBar.innerHTML = `${cpu.toFixed(1)}% ${cpuWarn ? '<span class="warning-icon">⚠️</span>' : ''}`;
+    
+                    memBar.style.width = memory + '%';
+                    memBar.innerHTML = `${memory.toFixed(1)}% ${memWarn ? '<span class="warning-icon">⚠️</span>' : ''}`;
+    
+                    const alertsContainer = document.getElementById('alerts');
+                    alertsContainer.innerHTML = '';
+    
+                    data.alerts.forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = 'alert';
+                        div.textContent = msg;
+                        alertsContainer.appendChild(div);
+                    });
+                });
+        }
+    
+        setInterval(updateMetrics, 5000);
+        window.onload = updateMetrics;
+    </script>
+    
+</body>
+</html>
