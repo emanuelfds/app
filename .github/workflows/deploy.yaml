@@ -159,13 +159,18 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 🔄 Changing the deployment of git repo
+      - name: 🔄 Checkout do repositório App-Manifest
         uses: actions/checkout@v4        
         with:
           ref: 'main'
           repository: 'emanuelfds/App-Manifest'
           token: ${{ secrets.GIT_PAT }}
           persist-credentials: true
+
+      - name: 🔁 Checkout deste repositório (com a action local)
+        uses: actions/checkout@v4
+        with:
+          path: 'app'  # evita sobrescrever o App-Manifest
 
       - name: 👁️ Display Docker Metadata Output Version from build-and-push-image
         run: echo "VERSION=${{ needs.build-and-push-image.outputs.docker_version }}"
@@ -216,7 +221,7 @@ jobs:
           fi
 
       - name: 📢 Notificar Slack com deploy
-        uses: ./.github/actions/notificar-slack
+        uses: ./app/.github/actions/notificar-slack
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           version: ${{ needs.build-and-push-image.outputs.docker_version }}
