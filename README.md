@@ -406,10 +406,11 @@ Agora com o PAT criado, vamos seguir com a criação dos Secrets:
 - **`DOCKERHUB_USERNAME`** - Username do seu DockerHub
 - **`DOCKERHUB_TOKEN`** - Password do seu DockerHub
 - **`GIT_PAT`** - Personal Access Token
+- **`GIT_EMAIL`** - Endereço de email que será associado aos commits da sua conta no GitHub.
+- **`SLACK_WEBHOOK_URL`** - URL do webhook do Slack que será usado para enviar notificações.
 
 Para este projeto foi criado também as seguintes variáveis:
 
-- **`GIT_EMAIL`** - Endereço de email que será associado aos commits da sua conta no GitHub.
 - **`GIT_USERNAME`** - Username que será associado aos commits da sua conta no GitHub.
 - **`k8S_PATH`** - Caminho dentro do [Repositório do Manifesto do Kubernetes](https://github.com/emanuelfds/App-Manifest) onde se encontra o arquivo de `deployment`.
 

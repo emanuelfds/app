@@ -11,7 +11,7 @@ curl -s -X POST -H 'Content-type: application/json' --data "{
       \"type\": \"header\",
       \"text\": {
         \"type\": \"plain_text\",
-        \"text\": \"🚀 Novo Deploy Realizado com Sucesso!\",
+        \"text\": \"🏗️ Build Realizado com Sucesso!\",
         \"emoji\": true
       }
     },
