@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3](https://github.com/emanuelfds/app/compare/v1.2.2...v1.2.3) (2025-05-16)
+
+
+### Bug Fixes
+
+* add config do slack ([e863a45](https://github.com/emanuelfds/app/commit/e863a455e2bd14c7207fd34e8814349aa2728874))
+* melhorando a mensagem de build and push ([d394819](https://github.com/emanuelfds/app/commit/d3948190755b6c6aff9201a8c8ce449ef75b69c2))
+* testando envio de alerta pro Slack ([763826e](https://github.com/emanuelfds/app/commit/763826ec0cf1f972a9517b4af99457dcb6d89f47))
+
 ## [1.2.2](https://github.com/emanuelfds/app/compare/v1.2.1...v1.2.2) (2025-05-15)
 
 
