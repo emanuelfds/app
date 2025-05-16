@@ -1,0 +1,38 @@
+name: "Notificar Slack"
+description: "Envia uma notificação visual para o Slack após deploy"
+inputs:
+  webhook:
+    description: "Slack Webhook URL"
+    required: true
+  version:
+    description: "Versão da imagem"
+    required: true
+  image:
+    description: "Nome da imagem"
+    required: true
+  repo:
+    description: "Nome do repositório (ex: user/app)"
+    required: true
+  sha:
+    description: "SHA do commit"
+    required: true
+  ref:
+    description: "Nome do branch"
+    required: true
+  actor:
+    description: "Usuário que executou o workflow"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: bash "${{ github.action_path }}/notify.sh"
+      shell: bash
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.webhook }}
+        VERSION: ${{ inputs.version }}
+        IMAGE_NAME: ${{ inputs.image }}
+        REPO: ${{ inputs.repo }}
+        SHA: ${{ inputs.sha }}
+        REF_NAME: ${{ inputs.ref }}
+        ACTOR: ${{ inputs.actor }}
