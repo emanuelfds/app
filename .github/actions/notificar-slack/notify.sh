@@ -18,12 +18,12 @@ curl -s -X POST -H 'Content-type: application/json' --data "{
     {
       \"type\": \"section\",
       \"fields\": [
-        { \"type\": \"mrkdwn\", \"text\": \"*Aplicação:*\n${IMAGE_NAME}\" },
-        { \"type\": \"mrkdwn\", \"text\": \"*Versão:*\n\`${VERSION}\`\" },
-        { \"type\": \"mrkdwn\", \"text\": \"*Branch:*\n\`${REF_NAME}\`\" },
-        { \"type\": \"mrkdwn\", \"text\": \"*Commit:*\n<${COMMIT_URL}|\`${SHORT_SHA}\`>\" },
-        { \"type\": \"mrkdwn\", \"text\": \"*Autor:*\n@${ACTOR}\" },
-        { \"type\": \"mrkdwn\", \"text\": \"*Data e Hora:*\n${TIMESTAMP}\" }
+        { \"type\": \"mrkdwn\", \"text\": \"📱 *Aplicação:*\n${IMAGE_NAME}\" },
+        { \"type\": \"mrkdwn\", \"text\": \"🏷️ *Versão:*\n\`${VERSION}\`\" },
+        { \"type\": \"mrkdwn\", \"text\": \"🌱 *Branch:*\n\`${REF_NAME}\`\" },
+        { \"type\": \"mrkdwn\", \"text\": \"📦 *Commit:*\n<${COMMIT_URL}|\`${SHORT_SHA}\`>\" },
+        { \"type\": \"mrkdwn\", \"text\": \"👤 *Autor:*\n@${ACTOR}\" },
+        { \"type\": \"mrkdwn\", \"text\": \"🕘 *Data e Hora:*\n${TIMESTAMP}\" }
       ]
     },
     {
